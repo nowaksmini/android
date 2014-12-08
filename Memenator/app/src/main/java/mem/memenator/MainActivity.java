@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
                 .obtainTypedArray(R.array.left_nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+        mDrawerList = (ListView) findViewById(R.id.left_list_slidermenu);
 
         navDrawerItems = new ArrayList<NavDrawerItem>();
 

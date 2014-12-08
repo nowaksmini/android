@@ -14,7 +14,7 @@ import mem.memenator.model.NavDrawerItem;
 
 /**
  * Thanks to adapter we can show items in list view
- * Created for left and right navigation drawer
+ * Created for left navigation drawer
  */
 
 public class NavDrawerListAdapter extends BaseAdapter {
