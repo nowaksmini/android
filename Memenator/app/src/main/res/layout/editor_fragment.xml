@@ -11,7 +11,7 @@
     android:textSize="16dp"
     android:text="Editor Fragment View"/>
 
-    <Button  android:id="@+id/btnIntend"
+    <Button  android:id="@+id/btnSaveImage"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
 
@@ -23,12 +23,12 @@
     android:layout_centerHorizontal="true"
     android:layout_marginTop="10dp"/>
 
-    <VideoView android:id="@+id/editorVideoView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/txtLabel"
-    android:minHeight="30dp"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="10dp"/>
+    <!--<VideoView android:id="@+id/editorVideoView"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/txtLabel"-->
+    <!--android:minHeight="30dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="10dp"/>-->
 </RelativeLayout>
 

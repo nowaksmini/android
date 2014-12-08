@@ -6,28 +6,26 @@ package mem.memenator.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import mem.memenator.R;
 import mem.memenator.adapters.ExpandableNavDrawerListAdapter;
-import mem.memenator.adapters.NavDrawerListAdapter;
+import mem.memenator.events.SwitchToEditorEvent;
+import mem.memenator.events.SwitchToHomeEvent;
 import mem.memenator.model.NavDrawerItem;
 
 public class HomeFragment extends Fragment {
@@ -44,6 +42,10 @@ public class HomeFragment extends Fragment {
     private ExpandableNavDrawerListAdapter adapter;
     public HomeFragment(){}
 
+    public void onEvent(SwitchToEditorEvent e) {
+        ImageView imageView = (ImageView) getView().findViewById(R.id.editorImageView);
+        imageView.setImageBitmap(e.getBitmap());
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -138,7 +140,7 @@ public class HomeFragment extends Fragment {
     /**
      * Displaying fragment view for selected nav drawer list item
      * */
-    private void displayView(int position, boolean isStart) {
+    public void displayView(int position, boolean isStart) {
         // update the main content by replacing fragments
         Fragment fragment = null;
         switch (position) {
@@ -146,8 +148,8 @@ public class HomeFragment extends Fragment {
                 fragment = new EditorFragment();
                 break;
             case 1:
-                fragment = new GalleryFragment();
-                // choose photos, create Editor Fragment and show choosen image
+                fragment = new GalleryFragment(true);
+                // choose photos, create Editor Fragment and show chosen image
                 break;
             case 2:
                 fragment = new SamplesFragment();
@@ -174,4 +176,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this, "onEvent");
+    }
 }

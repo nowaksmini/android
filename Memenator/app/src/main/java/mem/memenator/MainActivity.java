@@ -3,7 +3,6 @@ package mem.memenator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -14,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import de.greenrobot.event.EventBus;
 import mem.memenator.adapters.NavDrawerListAdapter;
+import mem.memenator.events.SwitchToHomeEvent;
 import mem.memenator.fragments.FindPeopleFragment;
 import mem.memenator.fragments.FriendsFragment;
 import mem.memenator.fragments.GalleryFragment;
@@ -35,15 +37,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +55,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     PictureCallback rawCallback;
     ShutterCallback shutterCallback;
     PictureCallback jpegCallback;
+
+    public void onEvent(SwitchToHomeEvent e) {
+        displayView(0);
+        EventBus.getDefault().post(e.getBitmap());
+    }
 
     public void captureImage(View v) throws IOException {
         //take the picture
@@ -210,7 +213,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         }
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
-
+        surfaceView.setVisibility(View.INVISIBLE);
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         surfaceHolder.addCallback(this);
@@ -232,7 +235,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
                     e.printStackTrace();
                 } finally {
                 }
-                Toast.makeText(getApplicationContext(), "Picture Saved", 2000).show();
+                Toast.makeText(getApplicationContext(), "Picture Saved", Toast.LENGTH_LONG).show();
+                //camera.stopPreview();
                 refreshCamera();
             }
         };
@@ -294,7 +298,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
                 fragment = new HomeFragment();
                 break;
             case 1:
-                fragment = new GalleryFragment();
+                fragment = new GalleryFragment(false);
                 break;
             case 2:
                 fragment = new FindPeopleFragment();
@@ -347,4 +351,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this, "onEvent");
+    }
 }
