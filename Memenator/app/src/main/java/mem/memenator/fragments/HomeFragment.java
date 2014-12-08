@@ -78,7 +78,7 @@ public class HomeFragment extends Fragment {
         mDrawerList.setAdapter(adapter);
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(0);
+            displayView(0,true); // position, if start application
         }
         return rootView;
     }
@@ -117,7 +117,7 @@ public class HomeFragment extends Fragment {
 
         @Override
         public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long l) {
-            displayView(position);
+            displayView(position,false);
             return false;
         }
     }
@@ -138,21 +138,22 @@ public class HomeFragment extends Fragment {
     /**
      * Displaying fragment view for selected nav drawer list item
      * */
-    private void displayView(int position) {
+    private void displayView(int position, boolean isStart) {
         // update the main content by replacing fragments
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new FriendsFragment();
+                fragment = new EditorFragment();
                 break;
             case 1:
-                fragment = new FindPeopleFragment();
+                fragment = new GalleryFragment();
+                // choose photos, create Editor Fragment and show choosen image
                 break;
             case 2:
-                fragment = new FriendsFragment();
+                fragment = new SamplesFragment();
                 break;
             case 3:
-                fragment = new FindPeopleFragment();
+                fragment = new EditorFragment();
                 break;
             default:
                 break;
