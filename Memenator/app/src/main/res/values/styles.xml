@@ -6,7 +6,7 @@
     </style>
     <style name="basic_button" parent="android:Widget.Button">
         <item name="android:textColor">@color/background_publish_text_panel</item>
-        <item name="android:background">@drawable/dotted_line_buttons</item>
+        <item name="android:background">@drawable/basic_button_selector</item>
         <item name="android:minHeight">@dimen/publish_text_panel_height</item>
         <item name="android:textSize">@dimen/button_font_size</item>
     </style>
