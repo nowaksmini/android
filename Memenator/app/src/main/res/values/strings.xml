@@ -15,16 +15,16 @@
 
     <!-- Right Nav Drawer Menu Items -->
     <string-array name="right_nav_drawer_items">
-        <item>Camera</item>
+        <item>Edit</item>
         <item>Gallery</item>
         <item>Samples</item>
-        <item>Edit</item>
+        <item>Camera</item>
     </string-array>
     <string-array name="right_edit_nav_drawer_items">
+        <item>Text</item>
         <item>Cut</item>
         <item>Boarder</item>
         <item>Solid Brush</item>
-        <item>Text</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
@@ -35,16 +35,17 @@
         <item>@drawable/ic_friends</item>
     </array>
     <array name="right_nav_drawer_icons">
-        <item>@drawable/ic_camera</item>
+        <item>@drawable/ic_edit</item>
         <item>@drawable/ic_gallery</item>
         <item>@drawable/ic_sample</item>
-        <item>@drawable/ic_edit</item>
+        <item>@drawable/ic_camera</item>
+
     </array>
     <array name="right_edit_nav_drawer_icons">
+        <item>@drawable/ic_text</item>
         <item>@drawable/ic_cut</item>
         <item>@drawable/ic_border</item>
         <item>@drawable/ic_brush</item>
-        <item>@drawable/ic_text</item>
     </array>
 
     <!-- Content Description -->
@@ -52,11 +53,23 @@
     <string name="right_desc_list_item_icon">Right Navigation Item</string>
 
     <!-- Messages -->
+    <string name="picture_saved">Picture successfully saved!</string>
     <string name="no_back_camera">There is no Rear Camera</string>
-    <string name="problem_saving_photo">There was a problem saving the photo...</string>
+    <string name="select_at_least_one_photo">Please select at least one image</string>
+    <string name="selected_images_prefix">You\'ve selected Total</string>
+    <string name="selected_images_suffix">image(s).</string>
+    <string name="problem_saving_photo">There was a problem during saving the photo...</string>
+    <string name="problem_saving_photo2">There was a problem during closing created new image from edited picture</string>
     <string name="problem_creating_album">There was a problem during creating an album for Memes</string>
+
+    <!--Application-->
     <string name="title_activity_take_picture">TakePictureActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="album_name">Memenator</string>
+    <string name="save_image">Save Image</string>
+    <string name="publish_button">Publish</string>
+    <string name="shared_preferences_file">MemenatorPrefsFile</string>
+    <string name="path_key">savePath</string>
+    <string name="select_button_gallery">Select Image</string>
 
 </resources>

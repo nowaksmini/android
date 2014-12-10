@@ -6,6 +6,8 @@ package mem.memenator.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.Notification;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -22,15 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import mem.memenator.EditAction;
+import mem.memenator.MainActivity;
 import mem.memenator.R;
 import mem.memenator.adapters.ExpandableNavDrawerListAdapter;
-import mem.memenator.events.SwitchToEditorEvent;
-import mem.memenator.events.SwitchToHomeEvent;
 import mem.memenator.model.NavDrawerItem;
 
 public class HomeFragment extends Fragment {
 
-    private static int EDIT_NUMBER = 3;
+    private static int EDIT_NUMBER = 0;
     private DrawerLayout mDrawerLayout;  // top-level container for window content
     private ExpandableListView mDrawerList;
     // slide menu items
@@ -40,17 +42,18 @@ public class HomeFragment extends Fragment {
     private ArrayList<NavDrawerItem> navDrawerItems;
     private HashMap<NavDrawerItem, List<NavDrawerItem>> navDrawerChildItems;
     private ExpandableNavDrawerListAdapter adapter;
+    private View rootView;
+    private String mTitle;
+    private String mDrawerTitle;
+    private int myIcon;
     public HomeFragment(){}
 
-    public void onEvent(SwitchToEditorEvent e) {
-        ImageView imageView = (ImageView) getView().findViewById(R.id.editorImageView);
-        imageView.setImageBitmap(e.getBitmap());
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Bundle = mapping String on Parcelable Type
-        View rootView = inflater.inflate(R.layout.home_fragment, container, false);
+        rootView = inflater.inflate(R.layout.home_fragment, container, false);
+        mDrawerTitle = mTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[0];
         // load slide menu items
         navDrawerChildItems = new HashMap<NavDrawerItem, List<NavDrawerItem>>();
         navMenuTitles = getResources().getStringArray(R.array.right_nav_drawer_items);
@@ -61,13 +64,13 @@ public class HomeFragment extends Fragment {
         mDrawerList = (ExpandableListView) rootView.findViewById(R.id.right_list_slidermenu);
         navDrawerItems = new ArrayList<NavDrawerItem>();
         // adding nav drawer items to array
-        // Camera
+        // Edit
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Gallery
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Samples
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "22"));
-        // Edit
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "10"));
+        // Camera
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -78,6 +81,8 @@ public class HomeFragment extends Fragment {
         adapter = new ExpandableNavDrawerListAdapter(rootView.getContext(),
                 navDrawerItems, navDrawerChildItems);
         mDrawerList.setAdapter(adapter);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        this.changeActionBarTitleAndIcon();
         if (savedInstanceState == null) {
             // on first time display view for first nav item
             displayView(0,true); // position, if start application
@@ -97,18 +102,46 @@ public class HomeFragment extends Fragment {
         navMenuEditIcons = getResources().obtainTypedArray(R.array.right_edit_nav_drawer_icons);
         navDrawerEditItems = new ArrayList<NavDrawerItem>();
         // adding nav drawer items to array
-        // Cut
-        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[0], navMenuEditIcons.getResourceId(0, -1)));
-        // Boarder
-        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[1], navMenuEditIcons.getResourceId(1, -1)));
-        // Solid Brush
-        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[2], navMenuEditIcons.getResourceId(2, -1)));
         // Text
+        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[0], navMenuEditIcons.getResourceId(0, -1)));
+        // Cut
+        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[1], navMenuEditIcons.getResourceId(1, -1)));
+        // Boarder
+        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[2], navMenuEditIcons.getResourceId(2, -1)));
+        // Solid Brush
         navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[3], navMenuEditIcons.getResourceId(3, -1)));
         // Recycle the typed array
         navMenuEditIcons.recycle();
        // navDrawerEditItems.setOnItemClickListener(new SlideMenuClickListener());
         navDrawerChildItems.put(navDrawerItems.get(EDIT_NUMBER), navDrawerEditItems);
+    }
+
+    private void changeActionBarTitleAndIcon()
+    {
+        // enabling action bar app icon and behaving it as toggle button
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActivity().getActionBar().setHomeButtonEnabled(true);
+        // for changing action bar -> image, text etc
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
+                R.drawable.ic_drawer, //nav menu toggle icon
+                R.string.app_name, // nav drawer open - description for accessibility
+                R.string.app_name // nav drawer close - description for accessibility
+        ) {
+            public void onDrawerClosed(View view) {
+                MainActivity.mDriverIcon = myIcon;
+                getActivity().getActionBar().setIcon(myIcon);
+                getActivity().getActionBar().setTitle(mDrawerTitle);
+                // calling onPrepareOptionsMenu() to show action bar icons
+                getActivity().invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActivity().getActionBar().setTitle(mTitle);
+//                getActivity().getActionBar().setIcon(R.drawable.ic_home);
+                // calling onPrepareOptionsMenu() to hide action bar icons
+                getActivity().invalidateOptionsMenu();
+            }
+        };
     }
 
     /**
@@ -118,7 +151,7 @@ public class HomeFragment extends Fragment {
             ExpandableListView.OnGroupClickListener {
 
         @Override
-        public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long l) {
+        public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long id) {
             displayView(position,false);
             return false;
         }
@@ -131,8 +164,13 @@ public class HomeFragment extends Fragment {
             ExpandableListView.OnChildClickListener {
 
         @Override
-        public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i2, long l) {
-            // implement editing
+        public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long id) {
+            // implement
+            EditorFragment.Action = EditAction.values()[childPosition];
+            mDrawerList.setSelectedChild(groupPosition, childPosition, true);
+            int index = expandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
+            expandableListView.setItemChecked(index, true);
+            mDrawerLayout.closeDrawer(mDrawerList);
             return false;
         }
     }
@@ -146,22 +184,33 @@ public class HomeFragment extends Fragment {
         switch (position) {
             case 0:
                 fragment = new EditorFragment();
+                myIcon = R.drawable.ic_edit;
+                mDrawerTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[0];
                 break;
             case 1:
                 fragment = new GalleryFragment(true);
+                myIcon = R.drawable.ic_gallery;
+                mDrawerTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[1];
                 // choose photos, create Editor Fragment and show chosen image
                 break;
             case 2:
                 fragment = new SamplesFragment();
+                myIcon = R.drawable.ic_sample;
+                mDrawerTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[2];
                 break;
             case 3:
-                fragment = new EditorFragment();
+                fragment = new SamplesFragment();
+                myIcon = R.drawable.ic_camera;
+                mDrawerTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[3];
                 break;
             default:
                 break;
         }
 
         if (fragment != null) {
+            MainActivity.mDriverIcon = myIcon;
+            getActivity().getActionBar().setIcon(myIcon);
+            getActivity().getActionBar().setTitle(mDrawerTitle);
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.home_frame_container, fragment).commit();
@@ -169,7 +218,7 @@ public class HomeFragment extends Fragment {
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            mDrawerLayout.closeDrawer(mDrawerList);
+            if(position != EDIT_NUMBER) mDrawerLayout.closeDrawer(mDrawerList);
         } else {
             // error in creating fragment
             Log.e("HomeFragment", "Error in creating fragment");
@@ -177,8 +226,9 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this, "onEvent");
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }

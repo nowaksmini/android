@@ -3,9 +3,13 @@ package mem.memenator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -13,14 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 
+import java.io.File;
 import java.util.ArrayList;
 
-import de.greenrobot.event.EventBus;
 import mem.memenator.adapters.NavDrawerListAdapter;
-import mem.memenator.events.SwitchToHomeEvent;
 import mem.memenator.fragments.FindPeopleFragment;
 import mem.memenator.fragments.FriendsFragment;
 import mem.memenator.fragments.GalleryFragment;
@@ -47,18 +49,29 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback {
     TextView testView;
-
+    private DrawerLayout mDrawerLayout;  // top-level container for window content
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+    public static Bitmap editedPicture;
+    public static String pictureToEditPath;
+    // nav drawer title
+    private CharSequence mDrawerTitle;
+    public static int mDriverIcon;
+    // used to store app title
+    private CharSequence mTitle;
+    // slide menu items
+    private String[] navMenuTitles;
+    private TypedArray navMenuIcons;
+    private ArrayList<NavDrawerItem> navDrawerItems;
+    private NavDrawerListAdapter adapter;
     Camera camera;
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
-
     PictureCallback rawCallback;
     ShutterCallback shutterCallback;
     PictureCallback jpegCallback;
 
-    public void onEvent(SwitchToHomeEvent e) {
-        displayView(0);
-        EventBus.getDefault().post(e.getBitmap());
+    public MainActivity() {
     }
 
     public void captureImage(View v) throws IOException {
@@ -66,19 +79,54 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         camera.takePicture(null, null, jpegCallback);
     }
 
+    public void saveImageOnDisc(View v) {
+
+        FileOutputStream out = null;
+        try {
+            SharedPreferences settings = getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
+            String savePath = settings.getString(getResources().getString(R.string.path_key),"");
+
+            File dir = Environment.getExternalStoragePublicDirectory(savePath);
+            //File dir = new File(savePath);
+            dir.mkdirs();
+            dir.setWritable(true);
+            File file = new File(dir,String.format("%d.png", System.currentTimeMillis()));
+            file.setWritable(true);
+            String s = file.getPath();
+          //  File Temp = file.getParentFile();
+            file.createNewFile();
+            out = new FileOutputStream(file);
+            editedPicture.compress(Bitmap.CompressFormat.PNG, 85, out); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            out.flush();
+            out.close(); // do not forget to close the stream
+
+            MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+            //editedPicture.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.problem_saving_photo), Toast.LENGTH_LONG).show();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.problem_saving_photo), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
     public void refreshCamera() {
         if (surfaceHolder.getSurface() == null) {
             // preview surface does not exist
             return;
         }
-
         // stop preview before making changes
         try {
             camera.stopPreview();
         } catch (Exception e) {
             // ignore: tried to stop a non-existent preview
         }
-
         // set preview size and make any resize, rotate or
         // reformatting changes here
         // start preview with new settings
@@ -119,7 +167,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         } catch (Exception e) {
             // check for exceptions
             System.err.println(e);
-            return;
+
         }
     }
 
@@ -130,28 +178,12 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         camera = null;
     }
 
-    private DrawerLayout mDrawerLayout;  // top-level container for window content
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
-    // nav drawer title
-    private CharSequence mDrawerTitle;
-    // used to store app title
-    private CharSequence mTitle;
-    // slide menu items
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
         mTitle = mDrawerTitle = getTitle();
-
+        mDriverIcon = R.drawable.ic_rainbow;
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.left_nav_drawer_items);
 
@@ -183,28 +215,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         adapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         mDrawerList.setAdapter(adapter);
-
-        // enabling action bar app icon and behaving it as toggle button
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        // for changing action bar -> image, text etc
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
-        ) {
-            public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                // calling onPrepareOptionsMenu() to show action bar icons
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                // calling onPrepareOptionsMenu() to hide action bar icons
-                invalidateOptionsMenu();
-            }
-        };
+        this.changeActionBarTitleAndIcon();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
@@ -225,7 +236,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
             public void onPictureTaken(byte[] data, Camera camera) {
                 FileOutputStream outStream = null;
                 try {
-                    outStream = new FileOutputStream(String.format("/sdcard/%d.jpg", System.currentTimeMillis()));
+                    outStream = new FileOutputStream(String.format(Environment.getExternalStorageDirectory().getPath() +"/%d.jpg", System.currentTimeMillis()));
                     outStream.write(data);
                     outStream.close();
                     Log.d("Log", "onPictureTaken - wrote bytes: " + data.length);
@@ -233,15 +244,47 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
                 }
-                Toast.makeText(getApplicationContext(), "Picture Saved", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
                 //camera.stopPreview();
                 refreshCamera();
             }
         };
+        SharedPreferences settings = getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
+        String savePath = settings.getString(getResources().getString(R.string.path_key),""); // "" means default value if didn't found key
+        if(savePath.isEmpty())
+        {
+            File file = new File(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath(), String.valueOf(getResources().getText(R.string.album_name).toString()));
+            settings.edit().putString(getResources().getString(R.string.path_key),file.getPath()).commit();
+        }
+        this.displayView(0);
     }
 
+    private void changeActionBarTitleAndIcon()
+    {
+        // enabling action bar app icon and behaving it as toggle button
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        // for changing action bar -> image, text etc
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, //nav menu toggle icon
+                R.string.app_name, // nav drawer open - description for accessibility
+                R.string.app_name // nav drawer close - description for accessibility
+        ) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                // calling onPrepareOptionsMenu() to show action bar icons
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                getActionBar().setIcon(R.drawable.ic_rainbow);
+                // calling onPrepareOptionsMenu() to hide action bar icons
+                invalidateOptionsMenu();
+            }
+        };
+    }
     /**
      * Slide menu item click listener
      * */
@@ -296,15 +339,19 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         switch (position) {
             case 0:
                 fragment = new HomeFragment();
+                mDriverIcon = R.drawable.ic_home;
                 break;
             case 1:
                 fragment = new GalleryFragment(false);
+                mDriverIcon = R.drawable.ic_photo;
                 break;
             case 2:
                 fragment = new FindPeopleFragment();
+                mDriverIcon = R.drawable.ic_search;
                 break;
             case 3:
                 fragment = new FriendsFragment();
+                mDriverIcon = R.drawable.ic_friends;
                 break;
             default:
                 break;
@@ -330,8 +377,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     public void setTitle(CharSequence title) {
         mTitle = title;
         getActionBar().setTitle(mTitle);
+        getActionBar().setIcon(mDriverIcon);
     }
-
+    //2130837517
     /**
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...
@@ -351,9 +399,4 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this, "onEvent");
-    }
 }

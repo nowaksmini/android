@@ -1,8 +1,10 @@
 package mem.memenator.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -25,8 +27,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import mem.memenator.MainActivity;
 import mem.memenator.R;
-import mem.memenator.events.SwitchToHomeEvent;
+
 
 /**
  * Fragment shown after left navigation select gallery
@@ -35,16 +38,20 @@ public class GalleryFragment extends Fragment {
     private boolean allImages=true;
     private int count;
     private Bitmap[] thumbnails;
-    private boolean[] thumbnailsselection;
-    private boolean oneselect;
+    private Boolean[] thumbnailsselection;
+    private boolean oneSelect;
     private String[] arrPath;
     private ImageAdapter imageAdapter;
     private Context context;
+    private String savePath;
 
+
+    @SuppressLint("ValidFragment")
     public GalleryFragment(boolean allImages){
         this.allImages = allImages;
     }
     public GalleryFragment (){}
+
     /** Called when the activity is first created. */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,27 +62,32 @@ public class GalleryFragment extends Fragment {
         final String[] columns = { MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID };
         final String orderBy = MediaStore.Images.Media._ID;
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        savePath = uri.getPath();
         if(!isExternalStorageReadable() || !isExternalStorageWritable())
         {
             return rootView;
         }
         else if(!allImages){
-            String tmp = getResources().getText(R.string.album_name).toString();
-            File file = getAlbumStorageDir(tmp);
-            uri = Uri.parse(Uri.encode(file.getAbsolutePath()));
+            SharedPreferences settings = rootView.getContext().getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
+            savePath = settings.getString(getResources().getString(R.string.path_key), "");
+            savePath = Environment.getExternalStoragePublicDirectory(savePath).getPath();
+
         }
-        Cursor imagecursor = context.getContentResolver().query(
-                uri, columns, null,
-                null, orderBy);
+        if(allImages) savePath = "";
+        final String[] selectionArgs = {"%" +  savePath + "%"};
+        final String selection = MediaStore.Images.ImageColumns.DATA+ " like ?";
+        Cursor imagecursor = context.getContentResolver().query(uri, columns,selection,selectionArgs, orderBy);
         if (imagecursor == null) {
+            ((Button) rootView.findViewById(R.id.selectBtn)).setVisibility(View.INVISIBLE);
             return rootView;
         }
         int image_column_index = imagecursor.getColumnIndex(MediaStore.Images.Media._ID);
         this.count = imagecursor.getCount();
         this.thumbnails = new Bitmap[this.count];
         this.arrPath = new String[this.count];
-        this.thumbnailsselection = new boolean[this.count];
+        this.thumbnailsselection = new Boolean[this.count];
         for (int i = 0; i < this.count; i++) {
+            thumbnailsselection[i] = false;
             imagecursor.moveToPosition(i);
             int id = imagecursor.getInt(image_column_index);
             int dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Images.Media.DATA);
@@ -84,37 +96,39 @@ public class GalleryFragment extends Fragment {
                     MediaStore.Images.Thumbnails.MICRO_KIND, null); // KIND if like size
             arrPath[i]= imagecursor.getString(dataColumnIndex);
         }
+
         GridView imagegrid = (GridView) rootView.findViewById(R.id.PhoneImageGrid);
         imageAdapter = new ImageAdapter();
         imagegrid.setAdapter(imageAdapter);
         imagecursor.close();
-
         final Button selectBtn = (Button) rootView.findViewById(R.id.selectBtn);
         selectBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                final int len = thumbnailsselection.length;
+                final int len = thumbnails.length;
                 int cnt = 0;
                 String selectImages = "";
-                List<Bitmap> selectedImages = new LinkedList<Bitmap>();
+                List<String> selectedImagesPath = new LinkedList<String>();
                 for (int i = 0; i < len; i++) {
                     if (thumbnailsselection[i]) {
                         cnt++;
+                        selectedImagesPath.add(arrPath[i]);
                         selectImages = selectImages + arrPath[i] + "|";
-                        selectedImages.add(thumbnails[i]);
                     }
                 }
                 if (cnt == 0) {
                     Toast.makeText(context,
-                            "Please select at least one image",
+                            getResources().getString(R.string.select_at_least_one_photo),
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(context,
-                            "You've selected Total " + cnt + " image(s).",
+                    Toast.makeText(context,getResources().getString(R.string.selected_images_prefix)
+                                    + cnt + getResources().getString(R.string.selected_images_suffix),
                             Toast.LENGTH_LONG).show();
                     Log.d("SelectedImages", selectImages);
                     // Toast = Window.Alert();
-                    EventBus.getDefault().post(new SwitchToHomeEvent(selectedImages.get(0)));
+                    MainActivity.pictureToEditPath = selectedImagesPath.get(0);
+                    MainActivity.editedPicture = null;
+
                 }
             }
         });
@@ -140,15 +154,6 @@ public class GalleryFragment extends Fragment {
         return false;
     }
 
-    public File getAlbumStorageDir(String albumName) {
-        // Get the directory for the user's public pictures directory.
-        File file = new File(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath(), String.valueOf(albumName));
-        if (!file.mkdirs()) {
-            Log.e("Memenator", "Directory not created");
-        }
-        return file;
-    }
-
     public class ImageAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
 
@@ -170,7 +175,7 @@ public class GalleryFragment extends Fragment {
 
         // ViewGroup = base class for layouts and containers, can storage views
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            final ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = mInflater.inflate(
@@ -192,17 +197,16 @@ public class GalleryFragment extends Fragment {
                     if (thumbnailsselection[id]){
                         cb.setChecked(false);
                         thumbnailsselection[id] = false;
-                        oneselect = false;
-                    } else if((allImages && !oneselect)||(!allImages))
+                        oneSelect = false;
+                    } else if((allImages && !oneSelect)||(!allImages))
                         {
                             cb.setChecked(true);
                             thumbnailsselection[id] = true;
-                            oneselect = true;
+                            oneSelect = true;
                         }
                     else {
                         cb.setChecked(false);
                     }
-
                 }
             });
             holder.imageview.setOnClickListener(new View.OnClickListener() {
@@ -212,12 +216,14 @@ public class GalleryFragment extends Fragment {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.setDataAndType(Uri.parse("file://" + arrPath[id]), "image/*");
-                    startActivity(intent);
+                        startActivity(intent);
                 }
             });
-            holder.imageview.setImageBitmap(thumbnails[position]);
-            holder.checkbox.setChecked(thumbnailsselection[position]);
-            holder.id = position;
+            if (position < thumbnailsselection.length) {
+                holder.imageview.setImageBitmap(thumbnails[position]);
+                holder.checkbox.setChecked(thumbnailsselection[position]);
+                holder.id = position;
+            }
             return convertView;
         }
     }

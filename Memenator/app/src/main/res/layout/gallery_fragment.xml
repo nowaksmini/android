@@ -8,19 +8,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:minWidth="200px"
-        android:text="Select" />
+        android:minWidth="@dimen/image_edited_width"
+        android:text="@string/select_button_gallery"
+        android:layout_marginBottom="@dimen/small_margin"/>
 
     <GridView
         android:id="@+id/PhoneImageGrid"
+        android:layout_margin="@dimen/small_margin"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/selectBtn"
-        android:columnWidth="90dp"
+        android:columnWidth="@dimen/gallery_column_width"
         android:gravity="center"
-        android:horizontalSpacing="10dp"
+        android:horizontalSpacing="@dimen/small_margin"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
+        android:verticalSpacing="@dimen/small_margin" />
 </RelativeLayout>
 

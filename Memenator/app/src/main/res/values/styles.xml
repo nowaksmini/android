@@ -2,7 +2,11 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
 
+            <item name="android:button">@style/basic_button</item>
+            </style>
+    <style name="basic_button" parent="android:style/Widget.Button">
+        <item name="android:background">@drawable/dotted_line_buttons</item>
+        <item name="android:textSize">@dimen/button_font_size</item>
+    </style>
 </resources>

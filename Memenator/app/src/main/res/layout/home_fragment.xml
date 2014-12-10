@@ -16,11 +16,13 @@ tools:context="mem.memenator.fragments.HomeFragment">
 
     android:id="@+id/right_list_slidermenu"
     android:layout_width="240dp"
+    android:groupIndicator="@drawable/expander"
+    android:indicatorRight="@dimen/small_margin"
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:choiceMode="singleChoice"
     android:divider="@color/list_divider"
-    android:dividerHeight="1dp"
+    android:dividerHeight="@dimen/divider_right_menu"
     android:listSelector="@drawable/list_selector"
     android:background="@color/list_background"/>
 

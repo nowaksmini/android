@@ -1,7 +1,7 @@
 package mem.memenator.fragments;
 
 /**
- * Created by Sylwia.Nowak on 2014-12-07.
+ * Fragment for finding people in neighbourhood by wi-fi connection
  */
 
 import android.app.Fragment;

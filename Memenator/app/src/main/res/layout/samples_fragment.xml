@@ -16,6 +16,6 @@
         android:layout_below="@id/txtLabel"
         android:src="@drawable/ic_friends"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="@dimen/small_margin"/>
 
 </RelativeLayout>
