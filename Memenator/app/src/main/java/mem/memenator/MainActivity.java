@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -93,21 +94,21 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback ,Co
             //File dir = new File(savePath);
             dir.mkdirs();
             dir.setWritable(true);
-            File file = new File(dir,String.format("%d.png", System.currentTimeMillis()));
+            File file = new File(dir,String.format("MemenatorMyMeme.png", System.currentTimeMillis()));
             file.setWritable(true);
             String s = file.getPath();
-          //  File Temp = file.getParentFile();
+            //  File Temp = file.getParentFile();
             file.createNewFile();
             out = new FileOutputStream(file);
             editedPicture.compress(Bitmap.CompressFormat.PNG, 85, out); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
             out.flush();
             out.close(); // do not forget to close the stream
-
-            MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            //editedPicture.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.problem_saving_photo), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         } finally {
             try {
                 if (out != null) {
@@ -222,7 +223,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback ,Co
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(1);
+            displayView(0);
         }
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
@@ -241,23 +242,25 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback ,Co
                     outStream = new FileOutputStream(String.format(Environment.getExternalStorageDirectory().getPath() +"/%d.jpg", System.currentTimeMillis()));
                     outStream.write(data);
                     outStream.close();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
                     Log.d("Log", "onPictureTaken - wrote bytes: " + data.length);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
                 //camera.stopPreview();
                 refreshCamera();
             }
         };
         SharedPreferences settings = getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
         String savePath = settings.getString(getResources().getString(R.string.path_key),""); // "" means default value if didn't found key
+        settings.edit().remove(getResources().getString(R.string.path_key)).commit();
+        savePath = "";
         if(savePath.isEmpty())
         {
             File file = new File(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath(), String.valueOf(getResources().getText(R.string.album_name).toString()));
-            settings.edit().putString(getResources().getString(R.string.path_key),file.getPath()).commit();
+            settings.edit().putString(getResources().getString(R.string.path_key),file.getAbsolutePath()).commit();
         }
         this.displayView(0);
     }

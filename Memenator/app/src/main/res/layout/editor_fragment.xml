@@ -94,6 +94,8 @@
             android:layout_below="@+id/additionalImageProcessingOptions"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/average_margin"
+            android:layout_marginRight="@dimen/average_margin"
+            android:layout_marginLeft="@dimen/average_margin"
             android:background="@drawable/dotted_line"
             android:minHeight="@dimen/image_edited_height"
             android:minWidth="@dimen/image_edited_width" />

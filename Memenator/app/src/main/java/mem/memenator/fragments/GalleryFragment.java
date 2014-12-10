@@ -68,14 +68,14 @@ public class GalleryFragment extends Fragment {
             return rootView;
         }
         else if(!allImages){
-            SharedPreferences settings = rootView.getContext().getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
-            savePath = settings.getString(getResources().getString(R.string.path_key), "");
-            savePath = Environment.getExternalStoragePublicDirectory(savePath).getPath();
-
+         //   SharedPreferences settings = rootView.getContext().getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
+           // savePath = settings.getString(getResources().getString(R.string.path_key), "");
+          //  savePath = Environment.getExternalStoragePublicDirectory(savePath).getPath();
+            savePath="MemenatorMyMeme";
         }
         if(allImages) savePath = "";
         final String[] selectionArgs = {"%" +  savePath + "%"};
-        final String selection = MediaStore.Images.ImageColumns.DATA+ " like ?";
+        final String selection = MediaStore.Images.ImageColumns.TITLE+ " like ?";
         Cursor imagecursor = context.getContentResolver().query(uri, columns,selection,selectionArgs, orderBy);
         if (imagecursor == null) {
             ((Button) rootView.findViewById(R.id.selectBtn)).setVisibility(View.INVISIBLE);

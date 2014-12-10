@@ -61,6 +61,7 @@
     <string name="problem_saving_photo">There was a problem during saving the photo...</string>
     <string name="problem_saving_photo2">There was a problem during closing created new image from edited picture</string>
     <string name="problem_creating_album">There was a problem during creating an album for Memes</string>
+    <string name="successfully_selected_sample">Successfully selected Sample</string>
 
     <!--Application-->
     <string name="title_activity_take_picture">TakePictureActivity</string>
@@ -83,4 +84,23 @@
     and move finger to select size</string>
     <string name="cutOption">To cut a rectangle from image click on image
     and move finger to select size to be removed</string>
+
+    <!--Samples-->
+    <string name="picture">Picture</string>
+    <string name="show_intro">Press a thumbnail to display at larger size</string>
+    <string name="select_info_sample">Click select button to select image to edit</string>
+
+    <string-array name="samples_icons">
+        <item>@drawable/doge</item>
+        <item>@drawable/girlfriend</item>
+        <item>@drawable/grumpy</item>
+        <item>@drawable/janusz</item>
+        <item>@drawable/science</item>
+        <item>@drawable/seal</item>
+        <item>@drawable/socially_awesome_penguin</item>
+        <item>@drawable/sociallyakwardpenguin</item>
+        <item>@drawable/stonedguy</item>
+        <item>@drawable/success_kid</item>
+    </string-array>
+
 </resources>

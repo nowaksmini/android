@@ -1,21 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewSample"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <TextView
-        android:id="@+id/editorDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="16dp"
-        android:text="Samples View"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-    <ImageView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editorDescription"
-        android:src="@drawable/ic_friends"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/small_margin"/>
+        <TextView android:id="@+id/descriptionSamples"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/small_margin"
+            android:text="@string/show_intro"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"/>
 
-</RelativeLayout>
+        <Gallery
+            android:id="@+id/gallery"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descriptionSamples" />
+
+        <TextView android:id="@+id/secondDescriptionSample"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/small_margin"
+            android:text="@string/select_info_sample"
+            android:textStyle="italic"
+            android:layout_below="@+id/gallery" />
+
+        <Button
+            android:id="@+id/selectSampleBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/secondDescriptionSample"
+            android:layout_centerHorizontal="true"
+            android:minWidth="@dimen/image_edited_width"
+            android:text="@string/select_button_gallery"
+            android:layout_marginBottom="@dimen/small_margin"/>
+
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:contentDescription="@string/picture"
+            android:layout_below="@+id/selectSampleBtn"
+            android:layout_margin="@dimen/small_margin"/>
+    </RelativeLayout>
+</ScrollView>
