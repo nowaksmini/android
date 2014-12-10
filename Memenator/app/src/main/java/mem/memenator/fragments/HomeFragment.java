@@ -46,6 +46,8 @@ public class HomeFragment extends Fragment {
     private String mTitle;
     private String mDrawerTitle;
     private int myIcon;
+    Fragment fragment;
+
     public HomeFragment(){}
 
     @Override
@@ -171,6 +173,7 @@ public class HomeFragment extends Fragment {
             int index = expandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
             expandableListView.setItemChecked(index, true);
             mDrawerLayout.closeDrawer(mDrawerList);
+            ((EditorFragment)fragment).refreshEditOption();
             return false;
         }
     }
@@ -180,7 +183,7 @@ public class HomeFragment extends Fragment {
      * */
     public void displayView(int position, boolean isStart) {
         // update the main content by replacing fragments
-        Fragment fragment = null;
+        fragment = null;
         switch (position) {
             case 0:
                 fragment = new EditorFragment();

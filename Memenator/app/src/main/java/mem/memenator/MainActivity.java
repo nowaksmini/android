@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -23,6 +25,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import mem.memenator.adapters.NavDrawerListAdapter;
+import mem.memenator.colors.ColorPickerDialog;
+import mem.memenator.fragments.EditorFragment;
 import mem.memenator.fragments.FindPeopleFragment;
 import mem.memenator.fragments.FriendsFragment;
 import mem.memenator.fragments.GalleryFragment;
@@ -47,7 +51,7 @@ import android.view.SurfaceView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements SurfaceHolder.Callback {
+public class MainActivity extends Activity implements SurfaceHolder.Callback ,ColorPickerDialog.OnColorChangedListener {
     TextView testView;
     private DrawerLayout mDrawerLayout;  // top-level container for window content
     private ListView mDrawerList;
@@ -70,9 +74,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     PictureCallback rawCallback;
     ShutterCallback shutterCallback;
     PictureCallback jpegCallback;
-
-    public MainActivity() {
-    }
+    public MainActivity()
+    { }
 
     public void captureImage(View v) throws IOException {
         //take the picture
@@ -80,7 +83,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     }
 
     public void saveImageOnDisc(View v) {
-
+        if(editedPicture == null) return;
         FileOutputStream out = null;
         try {
             SharedPreferences settings = getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
@@ -101,7 +104,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
             out.close(); // do not forget to close the stream
 
             MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
-            //editedPicture.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -220,7 +222,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(0);
+            displayView(1);
         }
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
@@ -273,6 +275,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         ) {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(mTitle);
+                getActionBar().setIcon(mDriverIcon);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
@@ -284,6 +287,16 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
                 invalidateOptionsMenu();
             }
         };
+    }
+
+    @Override
+    public void colorChanged(int color) {
+        EditorFragment.changeColor(color);
+    }
+
+    public void changeColorClick(View v)
+    {
+        new ColorPickerDialog(this,this, EditorFragment.COLOR).show();
     }
     /**
      * Slide menu item click listener
@@ -379,7 +392,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         getActionBar().setTitle(mTitle);
         getActionBar().setIcon(mDriverIcon);
     }
-    //2130837517
+
     /**
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...

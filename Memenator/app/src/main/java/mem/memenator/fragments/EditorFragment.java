@@ -12,10 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 
 import java.io.File;
@@ -33,11 +34,19 @@ import mem.memenator.R;
 public class EditorFragment extends Fragment implements View.OnTouchListener {
     public EditorFragment() {
     }
+
     private Bitmap copy;
     private View rootView;
     public static EditAction Action;
     private double startx;
     private double starty;
+    public static int COLOR = Color.BLACK;
+    private static EditText editText;
+    private TextView description;
+    private TextView labelWriteText;
+    private Button changeColorButton;
+    private static TextView  selectedColor;
+    private ImageView optionEditionImage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,38 +54,91 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         // Bundle = mapping String on Parcelable Type
         Action = EditAction.Text;
         rootView = inflater.inflate(R.layout.editor_fragment, container, false);
+        editText = (EditText) rootView.findViewById(R.id.textToPasteIntoEditedImage);
+        description = (TextView) rootView.findViewById(R.id.editorDescription);
+        optionEditionImage = (ImageView) rootView.findViewById(R.id.optionEditionImage);
+        labelWriteText = (TextView) rootView.findViewById(R.id.labelWriteText);
+        changeColorButton = (Button) rootView.findViewById(R.id.changeColorButton);
+        selectedColor = (TextView) rootView.findViewById(R.id.selectedColor);
+        selectedColor.setBackgroundColor(COLOR);
+        editText.setTextColor(COLOR);
+        if(optionEditionImage.getDrawable()==null) optionEditionImage.setBackgroundResource(R.drawable.ic_text);
         this.resetEditedImage();
         return rootView;
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         this.resetEditedImage();
     }
 
-    private void resetEditedImage()
+    public static void changeColor(int newColor)
     {
+        COLOR = newColor;
+        selectedColor.setBackgroundColor(newColor);
+        editText.setTextColor(newColor);
+
+    }
+    public void refreshEditOption()
+    {
+        switch(Action)
+        {
+            case Cut:
+                description.setText(getResources().getString(R.string.cutOption));
+                optionEditionImage.setBackgroundResource(R.drawable.ic_cut);
+                editText.setVisibility(View.GONE);
+                labelWriteText.setVisibility(View.GONE);
+                changeColorButton.setVisibility(View.GONE);
+                selectedColor.setVisibility(View.GONE);
+                break;
+            case Text:
+                description.setText(getResources().getString(R.string.textOption));
+                optionEditionImage.setBackgroundResource(R.drawable.ic_text);
+                editText.setVisibility(View.VISIBLE);
+                labelWriteText.setVisibility(View.VISIBLE);
+                changeColorButton.setVisibility(View.VISIBLE);
+                selectedColor.setVisibility(View.VISIBLE);
+                break;
+            case SolidBrush:
+                description.setText(getResources().getString(R.string.solidBrushOption));
+                optionEditionImage.setBackgroundResource(R.drawable.ic_brush);
+                editText.setVisibility(View.GONE);
+                labelWriteText.setVisibility(View.GONE);
+                changeColorButton.setVisibility(View.VISIBLE);
+                selectedColor.setVisibility(View.VISIBLE);
+                break;
+            case Border:
+                description.setText(getResources().getString(R.string.borderBrushOption));
+                optionEditionImage.setBackgroundResource(R.drawable.ic_border);
+                editText.setVisibility(View.GONE);
+                labelWriteText.setVisibility(View.GONE);
+                changeColorButton.setVisibility(View.VISIBLE);
+                selectedColor.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void resetEditedImage() {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
         imageView.setOnTouchListener(this);
         if (MainActivity.editedPicture != null) {
             // there is a Copy to load into ImageView in Editor
             imageView.setImageBitmap(MainActivity.editedPicture);
             copy = MainActivity.editedPicture.copy(MainActivity.editedPicture.getConfig(), true);
-        }else if(MainActivity.pictureToEditPath !=null)
-        {
+        } else if (MainActivity.pictureToEditPath != null) {
             // open image form director, create copy, save copy in application, load image to ImageView in editor
-            File imgFile = new  File(MainActivity.pictureToEditPath);
-            if(imgFile.exists()){
+            File imgFile = new File(MainActivity.pictureToEditPath);
+            if (imgFile.exists()) {
                 copy = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 imageView.setImageBitmap(copy);
-                double newHeight = getResources().getDimension(R.dimen.image_edited_width) * copy.getHeight()/ copy.getWidth();
-                copy = copy.createScaledBitmap(copy, (int)getResources().getDimension(R.dimen.image_edited_width), (int)(newHeight), true);
+                double newHeight = getResources().getDimension(R.dimen.image_edited_width) * copy.getHeight() / copy.getWidth();
+                copy = copy.createScaledBitmap(copy, (int) getResources().getDimension(R.dimen.image_edited_width), (int) (newHeight), true);
                 MainActivity.editedPicture = copy;
             }
         }
     }
+
     private void putImage() {
         MainActivity.editedPicture = copy;
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
@@ -90,7 +152,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     }
 
     private void DrawSegment(Point start, Point end) {
-        DrawSegment(start, end, Color.BLACK);
+        DrawSegment(start, end, COLOR);
     }
 
     private void RedrawImage() {
@@ -102,8 +164,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     }
 
     public void DrawSquare(double x, double y, double a, double b) {
-        this.DrawSquare(x, y, a, b, Color.BLACK);
-
+        this.DrawSquare(x, y, a, b, COLOR);
     }
 
     public void DrawBorder(double x, double y, double a, double b, int scale) {
@@ -129,13 +190,14 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         imageView.setImageBitmap(copy);
 
     }
-    EditText ET;
 
     @Override
     public boolean onTouch(View view, MotionEvent e) {
         // MotionEvent reports input details from the touch screen
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
+        if(imageView.getDrawable() == null) return true;
         ((ScrollView) rootView.findViewById(R.id.scrollViewEditor)).requestDisallowInterceptTouchEvent(true);
         float x = e.getX();
         float y = e.getY();
@@ -143,9 +205,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
             case Border:
                 switch (e.getAction()) {
                     case MotionEvent.ACTION_MOVE:
-
                         RedrawImage(); // Image without border
-
                         DrawBorder(startx, starty, x - startx, y - starty, 2);
                         break;
                     case MotionEvent.ACTION_DOWN:
@@ -158,15 +218,12 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
                         RedrawImage();
                         DrawBorder(startx, starty, x - startx, y - starty, 2);
                         putImage(); //save border on image
-
                 }
                 break;
             case SolidBrush:
                 switch (e.getAction()) {
                     case MotionEvent.ACTION_MOVE:
-
                         RedrawImage(); // Image without border
-
                         DrawSquare(startx, starty, x - startx, y - starty);
                         break;
                     case MotionEvent.ACTION_DOWN:
@@ -184,26 +241,14 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
             case Text:
                 if (e.getAction() == MotionEvent.ACTION_DOWN) {
                     //Create Text Box and take input
-
-
-                    RelativeLayout Rl = (RelativeLayout) rootView.findViewById(R.id.editorRelativeLayout);
-                    ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
-                    if (ET == null) {
-                        ET = new EditText(imageView.getContext());
-                        Rl.addView(ET);
-                    }
-
-
-                    drawText(ET.getText().toString(), x, y, Color.BLACK);
+                    drawText(editText.getText().toString(), x, y, COLOR);
                     putImage();
                 }
                 break;
             case Cut:
                 switch (e.getAction()) {
                     case MotionEvent.ACTION_MOVE:
-
                         RedrawImage(); // Image without border
-
                         DrawBorder(startx, starty, x - startx, y - starty, 1);
                         break;
                     case MotionEvent.ACTION_DOWN:

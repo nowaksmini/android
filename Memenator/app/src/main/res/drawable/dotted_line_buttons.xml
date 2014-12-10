@@ -2,12 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item>
         <shape>
-            <solid android:color="#F5FAFA" />
+            <solid android:color="#33B5E5" />
             <stroke
                 android:dashGap="3dp"
                 android:dashWidth="3dp"
                 android:width="1dp"
-                android:color="#0000FF" />
+                android:color="@color/background_publish_text_panel" />
             <padding
                 android:bottom="3dp"
                 android:left="3dp"

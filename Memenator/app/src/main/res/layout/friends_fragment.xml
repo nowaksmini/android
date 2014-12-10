@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/txtLabel"
+        android:id="@+id/editorDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -12,7 +12,7 @@
 
     <ImageView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtLabel"
+        android:layout_below="@id/editorDescription"
         android:src="@drawable/ic_friends"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/small_margin"/>

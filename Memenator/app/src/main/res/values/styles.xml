@@ -2,11 +2,12 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-
-            <item name="android:button">@style/basic_button</item>
-            </style>
-    <style name="basic_button" parent="android:style/Widget.Button">
+            <item name="android:buttonStyle">@style/basic_button</item>
+    </style>
+    <style name="basic_button" parent="android:Widget.Button">
+        <item name="android:textColor">@color/background_publish_text_panel</item>
         <item name="android:background">@drawable/dotted_line_buttons</item>
+        <item name="android:minHeight">@dimen/publish_text_panel_height</item>
         <item name="android:textSize">@dimen/button_font_size</item>
     </style>
 </resources>

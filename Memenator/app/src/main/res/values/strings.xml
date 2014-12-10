@@ -56,8 +56,8 @@
     <string name="picture_saved">Picture successfully saved!</string>
     <string name="no_back_camera">There is no Rear Camera</string>
     <string name="select_at_least_one_photo">Please select at least one image</string>
-    <string name="selected_images_prefix">You\'ve selected Total</string>
-    <string name="selected_images_suffix">image(s).</string>
+    <string name="selected_images_prefix">You\'ve selected Total </string>
+    <string name="selected_images_suffix"> image(s).</string>
     <string name="problem_saving_photo">There was a problem during saving the photo...</string>
     <string name="problem_saving_photo2">There was a problem during closing created new image from edited picture</string>
     <string name="problem_creating_album">There was a problem during creating an album for Memes</string>
@@ -66,10 +66,21 @@
     <string name="title_activity_take_picture">TakePictureActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="album_name">Memenator</string>
+    <string name="write_text">Write text: </string>
     <string name="save_image">Save Image</string>
     <string name="publish_button">Publish</string>
     <string name="shared_preferences_file">MemenatorPrefsFile</string>
     <string name="path_key">savePath</string>
     <string name="select_button_gallery">Select Image</string>
+    <string name="button_change_color">Change Color</string>
 
+    <!--Description Edit Option-->
+    <string name="textOption">Write in text panel below text to be pasted into image.
+        To paste text form text panel click on image</string>
+    <string name="solidBrushOption">To draw filled rectangle click on
+    image and move finger to select size</string>
+    <string name="borderBrushOption">To draw a border click on the image
+    and move finger to select size</string>
+    <string name="cutOption">To cut a rectangle from image click on image
+    and move finger to select size to be removed</string>
 </resources>
