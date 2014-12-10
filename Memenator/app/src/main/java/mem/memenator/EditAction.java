@@ -5,8 +5,8 @@ package mem.memenator;
  * Do not change position
  */
 public enum EditAction {
+    SolidBrush,
     Text,
     Cut,
-    Border,
-    SolidBrush
+    Border
 }

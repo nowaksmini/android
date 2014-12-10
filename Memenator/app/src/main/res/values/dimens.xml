@@ -18,4 +18,5 @@
     <dimen name="image_edited_height">200dp</dimen>
     <dimen name="gallery_column_width">90dp</dimen>
     <dimen name="divider_right_menu">1dp</dimen>
+    <dimen name="circle_diameter">40dp</dimen>
 </resources>

@@ -21,10 +21,10 @@
         <item>Camera</item>
     </string-array>
     <string-array name="right_edit_nav_drawer_items">
+        <item>Solid Brush</item>
         <item>Text</item>
         <item>Cut</item>
         <item>Boarder</item>
-        <item>Solid Brush</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
@@ -42,10 +42,10 @@
 
     </array>
     <array name="right_edit_nav_drawer_icons">
+        <item>@drawable/ic_brush</item>
         <item>@drawable/ic_text</item>
         <item>@drawable/ic_cut</item>
         <item>@drawable/ic_border</item>
-        <item>@drawable/ic_brush</item>
     </array>
 
     <!-- Content Description -->

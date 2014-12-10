@@ -52,7 +52,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Bundle = mapping String on Parcelable Type
-        Action = EditAction.Text;
+        Action = EditAction.SolidBrush;
         rootView = inflater.inflate(R.layout.editor_fragment, container, false);
         editText = (EditText) rootView.findViewById(R.id.textToPasteIntoEditedImage);
         description = (TextView) rootView.findViewById(R.id.editorDescription);
@@ -62,7 +62,16 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         selectedColor = (TextView) rootView.findViewById(R.id.selectedColor);
         selectedColor.setBackgroundColor(COLOR);
         editText.setTextColor(COLOR);
-        if(optionEditionImage.getDrawable()==null) optionEditionImage.setBackgroundResource(R.drawable.ic_text);
+        if(optionEditionImage.getDrawable()==null) {
+            optionEditionImage.setBackgroundResource(R.drawable.ic_brush);
+            description.setText(getResources().getString(R.string.solidBrushOption));
+            optionEditionImage.setBackgroundResource(R.drawable.ic_brush);
+            editText.setVisibility(View.GONE);
+            labelWriteText.setVisibility(View.GONE);
+            changeColorButton.setVisibility(View.VISIBLE);
+            selectedColor.setVisibility(View.VISIBLE);
+        }
+
         this.resetEditedImage();
         return rootView;
     }

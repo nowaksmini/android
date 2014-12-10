@@ -104,13 +104,13 @@ public class HomeFragment extends Fragment {
         navMenuEditIcons = getResources().obtainTypedArray(R.array.right_edit_nav_drawer_icons);
         navDrawerEditItems = new ArrayList<NavDrawerItem>();
         // adding nav drawer items to array
-        // Text
-        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[0], navMenuEditIcons.getResourceId(0, -1)));
-        // Cut
-        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[1], navMenuEditIcons.getResourceId(1, -1)));
-        // Boarder
-        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[2], navMenuEditIcons.getResourceId(2, -1)));
         // Solid Brush
+        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[0], navMenuEditIcons.getResourceId(0, -1)));
+        // Text
+        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[1], navMenuEditIcons.getResourceId(1, -1)));
+        // Cut
+        navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[2], navMenuEditIcons.getResourceId(2, -1)));
+        // Boarder
         navDrawerEditItems.add(new NavDrawerItem(navMenuTitlesEdit[3], navMenuEditIcons.getResourceId(3, -1)));
         // Recycle the typed array
         navMenuEditIcons.recycle();
