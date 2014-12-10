@@ -46,6 +46,7 @@ public class HomeFragment extends Fragment {
     private String mTitle;
     private String mDrawerTitle;
     private int myIcon;
+    private int lastFragment = 0;
     Fragment fragment;
 
     public HomeFragment(){}
@@ -85,10 +86,7 @@ public class HomeFragment extends Fragment {
         mDrawerList.setAdapter(adapter);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         this.changeActionBarTitleAndIcon();
-        if (savedInstanceState == null) {
-            // on first time display view for first nav item
-            displayView(0,true); // position, if start application
-        }
+        displayView(lastFragment);
         return rootView;
     }
 
@@ -154,7 +152,7 @@ public class HomeFragment extends Fragment {
 
         @Override
         public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long id) {
-            displayView(position,false);
+            displayView(position);
             return false;
         }
     }
@@ -181,8 +179,9 @@ public class HomeFragment extends Fragment {
     /**
      * Displaying fragment view for selected nav drawer list item
      * */
-    public void displayView(int position, boolean isStart) {
+    public void displayView(int position) {
         // update the main content by replacing fragments
+        lastFragment = position;
         fragment = null;
         switch (position) {
             case 0:
@@ -202,7 +201,7 @@ public class HomeFragment extends Fragment {
                 mDrawerTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[2];
                 break;
             case 3:
-                fragment = new SamplesFragment();
+                fragment = new PhotoFragment();
                 myIcon = R.drawable.ic_camera;
                 mDrawerTitle = getResources().getStringArray(R.array.right_nav_drawer_items)[3];
                 break;

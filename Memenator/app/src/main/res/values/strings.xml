@@ -74,6 +74,7 @@
     <string name="path_key">savePath</string>
     <string name="select_button_gallery">Select Image</string>
     <string name="button_change_color">Change Color</string>
+    <string name="button_take_photo">Take Photo to edit</string>
 
     <!--Description Edit Option-->
     <string name="textOption">Write in text panel below text to be pasted into image.
