@@ -19,7 +19,7 @@ import android.view.View;
 import mem.memenator.R;
 
 /**
- * Created by Sylwia.Nowak on 2014-12-10.
+ * Color Picker for showing in edition mode
  */
 public class ColorPickerDialog extends Dialog {
 
@@ -40,8 +40,9 @@ public class ColorPickerDialog extends Dialog {
             super(c);
             mListener = l;
             mColors = new int[]{
-                    0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00,
-                    0xFFFFFF00, 0xFFFF0000
+            Color.WHITE,Color.RED, Color.argb(255,255,0,255), Color.BLUE, Color.argb(255,0,255,255), Color.GREEN,
+                    Color.argb(255,255,255,0),Color.RED,Color.BLACK,Color.GREEN,Color.WHITE,Color.BLUE, Color.BLACK,
+                    Color.WHITE                ,
             };
             Shader s = new SweepGradient(0, 0, mColors, null);
 

@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
+import java.util.List;
+
 import mem.memenator.R;
 
 /**
@@ -30,9 +32,12 @@ public class PicAdapter extends BaseAdapter {
         int size = c.getResources().getIntArray(R.array.samples_icons).length;
         imageBitmaps  = new Bitmap[size];
         TypedArray imgs = c.getResources().obtainTypedArray(R.array.samples_icons);
-        for(int i=0; i<imageBitmaps.length; i++)
-            imageBitmaps[i]=BitmapFactory.decodeResource(c.getResources(),imgs.getResourceId(i, -1));
-        //more processing
+        for(int i=0; i<imageBitmaps.length; i++) {
+            Bitmap copy = BitmapFactory.decodeResource(c.getResources(), imgs.getResourceId(i, -1));
+            double newHeight = c.getResources().getDimension(R.dimen.image_edited_width) * copy.getHeight() / copy.getWidth();
+            copy = copy.createScaledBitmap(copy, (int) c.getResources().getDimension(R.dimen.image_edited_width), (int) (newHeight), true);
+            imageBitmaps[i] = copy;
+        }
         //get the styling attributes - use default Andorid system resources
         TypedArray styleAttrs = galleryContext.obtainStyledAttributes(R.styleable.PicGallery);
 
@@ -40,6 +45,19 @@ public class PicAdapter extends BaseAdapter {
         defaultItemBackground = styleAttrs.getResourceId(
                 R.styleable.PicGallery_android_galleryItemBackground, 0);
 //recycle attributes
+        styleAttrs.recycle();
+    }
+
+    public PicAdapter(List<Bitmap> list, Context c) {
+
+        this.galleryContext = c;
+        imageBitmaps  = list.toArray(new Bitmap[list.size()]);
+        //get the styling attributes - use default Andorid system resources
+        TypedArray styleAttrs = galleryContext.obtainStyledAttributes(R.styleable.PicGallery);
+        //get the background resource
+        defaultItemBackground = styleAttrs.getResourceId(
+                R.styleable.PicGallery_android_galleryItemBackground, 0);
+        //recycle attributes
         styleAttrs.recycle();
     }
 

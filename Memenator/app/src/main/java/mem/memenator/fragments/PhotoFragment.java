@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -65,8 +67,11 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
                     String path =String.format(Environment.getExternalStorageDirectory().getPath() + "/%d.jpg", System.currentTimeMillis());
                     outStream = new FileOutputStream(path);
                     outStream.write(data);
+                    outStream.flush();
                     outStream.close();
                     Toast.makeText(rootView.getContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
+                    File file = new File(path);
+                    MediaStore.Images.Media.insertImage(rootView.getContext().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
                     Log.d("Log", "onPictureTaken - wrote bytes: " + data.length);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

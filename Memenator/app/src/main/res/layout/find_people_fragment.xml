@@ -1,20 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewSample"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <TextView
-        android:id="@+id/editorDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Find People View"/>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-    <ImageView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editorDescription"
-        android:src="@drawable/ic_search"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/small_margin"/>
+        <RelativeLayout android:id="@+id/state_buttons_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+            <Button
+                android:id="@+id/receiveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/receive_btn"
+                android:layout_margin="@dimen/small_margin"
+            />
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/sendToWorldBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send_btn"
+                android:layout_toRightOf="@id/receiveBtn"
+                android:layout_margin="@dimen/small_margin"
+                />
+            </RelativeLayout>
+
+        <TextView android:id="@+id/descriptionFindPeople"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/small_margin"
+            android:text="@string/fid_people_description"
+            android:textStyle="bold"
+            android:layout_below="@id/state_buttons_wifi"/>
+
+        <Gallery
+            android:id="@+id/galleryReceived"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descriptionFindPeople" />
+
+        <TextView android:id="@+id/secondDescriptionWifi"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/small_margin"
+            android:text="@string/last_received_images"
+            android:textStyle="italic"
+            android:layout_below="@+id/galleryReceived" />
+
+        <Button
+            android:id="@+id/selectReceivedBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/secondDescriptionWifi"
+            android:layout_centerHorizontal="true"
+            android:minWidth="@dimen/image_edited_width"
+            android:text="@string/select_button_gallery"
+            android:layout_marginBottom="@dimen/small_margin"/>
+
+        <ImageView
+            android:id="@+id/pictureFindFriends"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:contentDescription="@string/picture"
+            android:layout_below="@+id/selectReceivedBtn"
+            android:layout_margin="@dimen/small_margin"/>
+    </RelativeLayout>
+</ScrollView>

@@ -33,7 +33,6 @@ public class SamplesFragment extends Fragment {
     private ImageView picView;
     private PicAdapter imgAdapt;
     private View rootView;
-    private Bitmap pic;
     public SamplesFragment(){}
 
 

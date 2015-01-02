@@ -62,6 +62,8 @@
     <string name="problem_saving_photo2">There was a problem during closing created new image from edited picture</string>
     <string name="problem_creating_album">There was a problem during creating an album for Memes</string>
     <string name="successfully_selected_sample">Successfully selected Sample</string>
+    <string name="not_connected_wifi">Device cannot connect with devices through wifi. Code error = </string>
+    <string name="connected_wifi">Device connected with devices through wifi. </string>
 
     <!--Application-->
     <string name="title_activity_take_picture">TakePictureActivity</string>
@@ -90,7 +92,6 @@
     <string name="picture">Picture</string>
     <string name="show_intro">Press a thumbnail to display at larger size</string>
     <string name="select_info_sample">Click select button to select image to edit</string>
-
     <string-array name="samples_icons">
         <item>@drawable/doge</item>
         <item>@drawable/girlfriend</item>
@@ -103,5 +104,13 @@
         <item>@drawable/stonedguy</item>
         <item>@drawable/success_kid</item>
     </string-array>
+
+
+    <!--FindPeople-->
+    <string name="fid_people_description">Press button receive to listen images and send for sharing your image through wifi</string>
+    <string name="last_received_images">Last received images</string>
+    <string name="receive_btn">Receive Memes</string>
+    <string name="send_btn">Send Memes</string>
+
 
 </resources>
