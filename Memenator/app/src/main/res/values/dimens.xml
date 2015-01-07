@@ -19,4 +19,8 @@
     <dimen name="gallery_column_width">90dp</dimen>
     <dimen name="divider_right_menu">1dp</dimen>
     <dimen name="circle_diameter">40dp</dimen>
+    <dimen name="logging_font_size">12sp</dimen>
+    <dimen name="logging_instruction_width">190dp</dimen>
+    <dimen name="list_view_right_navigation_width">240dp</dimen>
+    <dimen name="list_view_divider_height">1dp</dimen>
 </resources>

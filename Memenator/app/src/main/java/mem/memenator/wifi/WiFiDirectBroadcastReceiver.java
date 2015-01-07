@@ -7,9 +7,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.util.Log;
 
-import mem.memenator.fragments.FindPeopleFragment;
+import mem.memenator.options_fragments.FindPeopleFragment;
 
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 

@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import mem.memenator.fragments.FindPeopleFragment;
+import mem.memenator.options_fragments.FindPeopleFragment;
 
 /**
  * Async Task for getting image

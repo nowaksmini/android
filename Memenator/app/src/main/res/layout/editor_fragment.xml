@@ -60,9 +60,18 @@
                 android:background="@color/background_publish_text_panel"
                 android:layout_below="@id/changeColorButton"
                 android:layout_alignBottom="@+id/labelWriteText"
-                android:elegantTextHeight="false"
                 android:layout_alignLeft="@+id/selectedColor"
                 android:layout_marginRight="@dimen/small_margin" />
+            <Button android:id="@+id/changeFontButton"
+                android:layout_margin="@dimen/small_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="changeFontClick"
+                android:minWidth="@dimen/publish_text_panel_width"
+                android:layout_below="@id/changeColorButton"
+                android:layout_alignBottom="@+id/labelWriteText"
+                android:text="@string/button_change_font"
+                android:layout_toRightOf="@+id/textToPasteIntoEditedImage" />
 
             <TextView android:id="@+id/selectedColor"
                 android:layout_margin="@dimen/small_margin"

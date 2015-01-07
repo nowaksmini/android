@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Memenator</string>
-    <string name="action_example">Log Out</string>
+    <string name="log_out">Log Out</string>
     <string name="action_settings">Settings</string>
     <string name="images_album">memenator</string>
     <!-- Left Nav Drawer Menu Items -->
@@ -74,8 +74,11 @@
     <string name="publish_button">Publish</string>
     <string name="shared_preferences_file">MemenatorPrefsFile</string>
     <string name="path_key">savePath</string>
+    <string name="user_name">user_name</string>
+    <string name="user_id">user_id</string>
     <string name="select_button_gallery">Select Image</string>
     <string name="button_change_color">Change Color</string>
+    <string name="button_change_font">Change Font</string>
     <string name="button_take_photo">Take Photo to edit</string>
 
     <!--Description Edit Option-->
@@ -111,6 +114,9 @@
     <string name="last_received_images">Last received images</string>
     <string name="receive_btn">Receive Memes</string>
     <string name="send_btn">Send Memes</string>
+    <string name="cancel">Cancel</string>
 
+    <!--Facebook-->
+    <string name="facebook_app_id">1541395889448486</string>
 
 </resources>
