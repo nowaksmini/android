@@ -1,61 +1,45 @@
 package mem.memenator;
 
 import android.app.ActionBar;
-import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.AppEventsLogger;
-import com.facebook.Session;
 import com.facebook.widget.ProfilePictureView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import mem.memenator.adapters.NavDrawerListAdapter;
-import mem.memenator.fonts.FontPickerDialog;
-import mem.memenator.logging.LoggingActivity;
+import mem.memenator.adapters.TabsPagerAdapter;
 import mem.memenator.model.NavDrawerItem;
-import mem.memenator.options_fragments.EditorFragment;
 import mem.memenator.options_fragments.FindPeopleFragment;
-import mem.memenator.options_fragments.FriendsFragment;
 import mem.memenator.options_fragments.GalleryFragment;
 import mem.memenator.options_fragments.HomeFragment;
-import yuku.ambilwarna.AmbilWarnaDialog;
-
-import static yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
 
 /**
- * Creating a NavDrawerListAdapter instance and adding list items.
- * > Assigning the adapter to Navigation Drawer ListView
- * > Creating click event listener for list items
- * > Creating and displaying fragment activities on selecting list item.
+ *
  */
-
-public class MainActivity extends FragmentActivity implements FontPickerDialog.FontPickerDialogListener {
-    TextView testView;
+public class MainActivity extends FragmentActivity implements
+        ActionBar.TabListener {
+    private ViewPager viewPager;
+    private TabsPagerAdapter mAdapter;
+    private ActionBar actionBar;
     private DrawerLayout mDrawerLayout;  // top-level container for window content
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -71,8 +55,6 @@ public class MainActivity extends FragmentActivity implements FontPickerDialog.F
     private TypedArray navMenuIcons;
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
-    private android.support.v4.app.Fragment logOutFragment;
-    private static final int LOG_OUT = 2;
 
     /**
      * Slide menu item click listener
@@ -141,92 +123,99 @@ public class MainActivity extends FragmentActivity implements FontPickerDialog.F
                     (R.string.path_key), file.getAbsolutePath()).commit();
         }
         this.displayView(0);
-    }
+        setContentView(R.layout.activity_main);
 
-    @Override
-    public void onFontSelected(FontPickerDialog dialog) {
-        Toast.makeText(this.getBaseContext(), dialog.getSelectedFont(), Toast.LENGTH_LONG);
-    }
+        // Initilization
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        actionBar = getActionBar();
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.my_menu, menu);
-        return true;
-    }
+        viewPager.setAdapter(mAdapter);
+        actionBar.setHomeButtonEnabled(false);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        String title = (String) item.getTitle();
-        if (title.equals(getResources().getString(R.string.log_out))) {
-            callFacebookLogout(this);
-            return true;
+        // Adding Tabs
+        for (String tab_name : navMenuTitles) {
+            actionBar.addTab(actionBar.newTab().setText(tab_name)
+                    .setTabListener(this));
         }
-        // toggle nav drawer on selecting action bar app icon/title
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
+        /**
+         * on swiping the viewpager make respective tab selected
+         * */
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                // on changing the page
+                // make respected tab selected
+                actionBar.setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+    }
+
+        @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            // on tab selected
+            // show respected fragment view
+            viewPager.setCurrentItem(tab.getPosition());
+
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    /**
+     * Displaying fragment view for selected nav drawer list item
+     */
+    private void displayView(int position) {
+        // update the main content by replacing fragments
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new HomeFragment();
+                mDriverIcon = R.drawable.ic_home;
+                break;
+            case 1:
+                fragment = new GalleryFragment(false);
+                mDriverIcon = R.drawable.ic_photo;
+                break;
+            case 2:
+                fragment = new FindPeopleFragment();
+                mDriverIcon = R.drawable.ic_search;
+                break;
+            default:
+                break;
         }
-        // Handle action bar actions click
-        return super.onOptionsItemSelected(item);
-    }
 
-    /**
-     * Called when invalidateOptionsMenu() is triggered
-     */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        SharedPreferences settings = getSharedPreferences
-                (getResources().getString(R.string.shared_preferences_file), 0);
-        menu.findItem(R.id.user_name).setTitle
-                (settings.getString(getResources().getString(R.string.user_name),""));
-        ProfilePictureView profilePictureView = (ProfilePictureView) this.findViewById
-                (R.id.selection_profile_pic);
-        profilePictureView.setCropped(true);
-        profilePictureView.setProfileId(settings.getString(getResources().getString(R.string.user_id),""));
-        return super.onPrepareOptionsMenu(menu);
-    }
+        if (fragment != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_container, fragment).commit();
 
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getActionBar().setTitle(mTitle);
-        getActionBar().setIcon(mDriverIcon);
-    }
-
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    /**
-     * facebook controlling
-     */
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Logs 'install' and 'app activate' App Events.
-        AppEventsLogger.activateApp(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Logs 'app deactivate' App Event.
-        AppEventsLogger.deactivateApp(this);
+            // update selected item and title, then close the drawer
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            setTitle(navMenuTitles[position]);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else {
+            // error in creating fragment
+            Log.e("MainActivity", "Error in creating fragment");
+        }
     }
 
     private void changeActionBarTitleAndIcon() {
@@ -259,127 +248,5 @@ public class MainActivity extends FragmentActivity implements FontPickerDialog.F
         View v = inflater.inflate(R.layout.action_bar, null);
         actionBar.setCustomView(v);
     }
-
-    public void changeColorClick(View v) {
-        colorPicker();
-    }
-
-    public void changeFontClick(View v) {
-        FontPickerDialog dlg = new FontPickerDialog();
-        dlg.show(getFragmentManager(), "font_picker");
-    }
-
-    public void colorPicker() {
-        AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, EditorFragment.COLOR, new OnAmbilWarnaListener() {
-
-            // Executes, when user click Cancel button
-            @Override
-            public void onCancel(AmbilWarnaDialog dialog) {
-                dialog.getDialog().cancel();
-            }
-
-            // Executes, when user click OK button
-            @Override
-            public void onOk(AmbilWarnaDialog dialog, int color) {
-                EditorFragment.changeColor(color);
-            }
-        });
-        dialog.show();
-    }
-
-    /**
-     * Displaying fragment view for selected nav drawer list item
-     */
-    private void displayView(int position) {
-        // update the main content by replacing fragments
-        Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = new HomeFragment();
-                mDriverIcon = R.drawable.ic_home;
-                break;
-            case 1:
-                fragment = new GalleryFragment(false);
-                mDriverIcon = R.drawable.ic_photo;
-                break;
-            case 2:
-                fragment = new FindPeopleFragment();
-                mDriverIcon = R.drawable.ic_search;
-                break;
-            case 3:
-                fragment = new FriendsFragment();
-                mDriverIcon = R.drawable.ic_friends;
-                break;
-            default:
-                break;
-        }
-
-        if (fragment != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
-
-            // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
-        } else {
-            // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
-        }
-    }
-
-    public void saveImageOnDisc(View v) {
-        if (editedPicture == null) return;
-        FileOutputStream out = null;
-        try {
-            SharedPreferences settings = getSharedPreferences(getResources().getString
-                    (R.string.shared_preferences_file), 0);
-            String savePath = settings.getString(getResources().getString(R.string.path_key), "");
-            File dir = Environment.getExternalStoragePublicDirectory(savePath);
-            dir.mkdirs();
-            dir.setWritable(true);
-            File file = new File(dir, String.format("MemenatorMyMeme.png", System.currentTimeMillis()));
-            file.setWritable(true);
-            file.createNewFile();
-            out = new FileOutputStream(file);
-            editedPicture.compress(Bitmap.CompressFormat.PNG, 85, out); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
-            out.flush();
-            out.close(); // do not forget to close the stream
-            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(),
-                    file.getName(), file.getName());
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.picture_saved),
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.problem_saving_photo), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private void callFacebookLogout(Context context) {
-        Session session = Session.getActiveSession();
-        if (session != null) {
-            if (!session.isClosed()) {
-                session.closeAndClearTokenInformation();
-                //clear your preferences if saved
-            }
-        } else {
-            session = new Session(context);
-            Session.setActiveSession(session);
-            session.closeAndClearTokenInformation();
-            //clear your preferences if saved
-        }
-        Intent intent = new Intent(this, LoggingActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
 }
+

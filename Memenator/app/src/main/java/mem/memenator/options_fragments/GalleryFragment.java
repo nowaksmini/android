@@ -1,7 +1,6 @@
 package mem.memenator.options_fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,7 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.List;
 
-import mem.memenator.MainActivity;
+import mem.memenator.MainActivity1;
 import mem.memenator.R;
 
 
@@ -123,8 +123,8 @@ public class GalleryFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                     Log.d("SelectedImages", selectImages);
                     // Toast = Window.Alert();
-                    MainActivity.pictureToEditPath = selectedImagesPath.get(0);
-                    MainActivity.editedPicture = null;
+                    MainActivity1.pictureToEditPath = selectedImagesPath.get(0);
+                    MainActivity1.editedPicture = null;
 
                 }
             }

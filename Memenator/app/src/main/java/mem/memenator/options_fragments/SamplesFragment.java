@@ -1,7 +1,8 @@
 package mem.memenator.options_fragments;
 
-import android.app.Fragment;
+
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,7 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import mem.memenator.MainActivity;
+import mem.memenator.MainActivity1;
 import mem.memenator.R;
 import mem.memenator.adapters.PicAdapter;
 
@@ -57,7 +58,7 @@ public class SamplesFragment extends Fragment {
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
+                MainActivity1.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
                 Toast.makeText(rootView.getContext(),rootView.getResources().getString(R.string.successfully_selected_sample),Toast.LENGTH_LONG).show();
             }
         });

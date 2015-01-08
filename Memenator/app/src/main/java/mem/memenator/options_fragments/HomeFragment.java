@@ -4,12 +4,13 @@ package mem.memenator.options_fragments;
  * Fragment shown after left navigation select home
  */
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +22,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mem.memenator.model.EditActionType;
-import mem.memenator.MainActivity;
+import mem.memenator.MainActivity1;
 import mem.memenator.R;
 import mem.memenator.adapters.ExpandableNavDrawerListAdapter;
+import mem.memenator.model.EditActionType;
 import mem.memenator.model.NavDrawerItem;
 
 public class HomeFragment extends Fragment {
@@ -125,7 +126,7 @@ public class HomeFragment extends Fragment {
                 R.string.app_name // nav drawer close - description for accessibility
         ) {
             public void onDrawerClosed(View view) {
-                MainActivity.mDriverIcon = myIcon;
+                MainActivity1.mDriverIcon = myIcon;
                 getActivity().getActionBar().setIcon(myIcon);
                 getActivity().getActionBar().setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
@@ -207,7 +208,7 @@ public class HomeFragment extends Fragment {
         }
 
         if (fragment != null) {
-            MainActivity.mDriverIcon = myIcon;
+            MainActivity1.mDriverIcon = myIcon;
             getActivity().getActionBar().setIcon(myIcon);
             getActivity().getActionBar().setTitle(mDrawerTitle);
             FragmentManager fragmentManager = getFragmentManager();

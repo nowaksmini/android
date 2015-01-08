@@ -4,7 +4,7 @@ package mem.memenator.options_fragments;
  * Fragment for finding people in neighbourhood by wi-fi connection
  */
 
-import android.app.Fragment;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -14,6 +14,7 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import mem.memenator.MainActivity;
+import mem.memenator.MainActivity1;
 import mem.memenator.R;
 import mem.memenator.adapters.PicAdapter;
 import mem.memenator.wifi.MemenatorClientAsyncTask;
@@ -80,7 +81,7 @@ public class FindPeopleFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                    MainActivity.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
+                    MainActivity1.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
                 } catch (Exception e) {
                 }
                 Toast.makeText(rootView.getContext(), rootView.getResources().getString(R.string.successfully_selected_sample), Toast.LENGTH_LONG).show();
@@ -177,7 +178,7 @@ public class FindPeopleFragment extends Fragment {
                     @Override
                     public void onSuccess() {
                         //success logic
-                        Tasks.add(new MemenatorClientAsyncTask(MainActivity.editedPicture, deviceInfo.deviceAddress));
+                        Tasks.add(new MemenatorClientAsyncTask(MainActivity1.editedPicture, deviceInfo.deviceAddress));
                     }
 
                     @Override

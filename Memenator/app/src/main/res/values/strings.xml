@@ -10,7 +10,6 @@
         <item>Home</item>
         <item>My Memes</item>
         <item>Find People</item>
-        <item>Friends</item>
     </string-array>
 
     <!-- Right Nav Drawer Menu Items -->
@@ -118,5 +117,7 @@
 
     <!--Facebook-->
     <string name="facebook_app_id">1541395889448486</string>
+    <string name="error_dialog_title">Error</string>
+    <string name="error_dialog_button_text">OK</string>
 
 </resources>

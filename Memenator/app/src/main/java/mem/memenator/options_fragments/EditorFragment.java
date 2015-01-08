@@ -1,6 +1,5 @@
 package mem.memenator.options_fragments;
 
-import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,12 +18,11 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-
 import java.io.File;
 
-import mem.memenator.model.EditActionType;
-import mem.memenator.MainActivity;
+import mem.memenator.MainActivity1;
 import mem.memenator.R;
+import mem.memenator.model.EditActionType;
 
 
 /**
@@ -131,27 +130,27 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     private void resetEditedImage() {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
         imageView.setOnTouchListener(this);
-        if (MainActivity.editedPicture != null) {
+        if (MainActivity1.editedPicture != null) {
             // there is a Copy to load into ImageView in Editor
-            imageView.setImageBitmap(MainActivity.editedPicture);
-            copy = MainActivity.editedPicture.copy(MainActivity.editedPicture.getConfig(), true);
-        } else if (MainActivity.pictureToEditPath != null) {
+            imageView.setImageBitmap(MainActivity1.editedPicture);
+            copy = MainActivity1.editedPicture.copy(MainActivity1.editedPicture.getConfig(), true);
+        } else if (MainActivity1.pictureToEditPath != null) {
             // open image form director, create copy, save copy in application, load image to ImageView in editor
-            File imgFile = new File(MainActivity.pictureToEditPath);
+            File imgFile = new File(MainActivity1.pictureToEditPath);
             if (imgFile.exists()) {
                 copy = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 imageView.setImageBitmap(copy);
                 double newHeight = getResources().getDimension(R.dimen.image_edited_width) * copy.getHeight() / copy.getWidth();
                 copy = copy.createScaledBitmap(copy, (int) getResources().getDimension(R.dimen.image_edited_width), (int) (newHeight), true);
-                MainActivity.editedPicture = copy;
+                MainActivity1.editedPicture = copy;
             }
         }
     }
 
     private void putImage() {
-        MainActivity.editedPicture = copy;
+        MainActivity1.editedPicture = copy;
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
-        imageView.setImageBitmap(MainActivity.editedPicture);
+        imageView.setImageBitmap(MainActivity1.editedPicture);
     }
 
     private void PutPixel(Bitmap bitmap, int x, int y, int color) {
@@ -166,9 +165,9 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
 
     private void RedrawImage() {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
-        if (MainActivity.editedPicture != null) {
-            imageView.setImageBitmap(MainActivity.editedPicture);
-            copy = MainActivity.editedPicture.copy(MainActivity.editedPicture.getConfig(), true);
+        if (MainActivity1.editedPicture != null) {
+            imageView.setImageBitmap(MainActivity1.editedPicture);
+            copy = MainActivity1.editedPicture.copy(MainActivity1.editedPicture.getConfig(), true);
         }
     }
 

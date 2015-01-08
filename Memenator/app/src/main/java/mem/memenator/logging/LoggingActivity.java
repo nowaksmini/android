@@ -14,7 +14,7 @@ import com.facebook.Session;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import mem.memenator.MainActivity;
+import mem.memenator.MainActivity1;
 
 /**
  * Activity created firstly, Main Activity starts after successfully my_menu
@@ -90,7 +90,7 @@ public class LoggingActivity extends FragmentActivity {
 
     private void showView(int index) {
         if (index == MAIN_PANEL) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity1.class);
             startActivity(intent);
             finish();
         } else if (index == LOGGING_PANEL) {
