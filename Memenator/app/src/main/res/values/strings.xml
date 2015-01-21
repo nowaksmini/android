@@ -15,38 +15,25 @@
         <item>Camera</item>
     </string-array>
 
-    <!-- Right Nav Drawer Menu Items -->
-    <string-array name="right_nav_drawer_items">
-        <item>Edit</item>
-    </string-array>
-    <string-array name="right_edit_nav_drawer_items">
-        <item>Solid Brush</item>
-        <item>Text</item>
-        <item>Cut</item>
-        <item>Boarder</item>
-    </string-array>
+    <string name="pen">Pen</string>
+    <string name="rectangle">Rectangle</string>
+    <string name="filled_rectangle">Filled Rectangle</string>
+    <string name="circle">Circle</string>
+    <string name="filled_circle">Filled Circle</string>
+    <string name="text">Text</string>
+    <string name="cut">Cut</string>
 
-    <!-- Nav Drawer List Item Icons -->
+    <string name="filled">Filled</string>
+    <string name="boarder">Border</string>
+
+    <!-- Tab Item Icons -->
     <array name="tab_icons">
         <item>@drawable/ic_home</item>
-        <item>@drawable/ic_search</item>
+        <item>@drawable/ic_bluetooth</item>
         <item>@drawable/ic_photo</item>
         <item>@drawable/ic_gallery</item>
         <item>@drawable/ic_sample</item>
         <item>@drawable/ic_camera</item>
-    </array>
-    <array name="right_nav_drawer_icons">
-        <item>@drawable/ic_edit</item>
-        <item>@drawable/ic_gallery</item>
-        <item>@drawable/ic_sample</item>
-        <item>@drawable/ic_camera</item>
-
-    </array>
-    <array name="right_edit_nav_drawer_icons">
-        <item>@drawable/ic_brush</item>
-        <item>@drawable/ic_text</item>
-        <item>@drawable/ic_cut</item>
-        <item>@drawable/ic_border</item>
     </array>
 
     <!-- Content Description -->
@@ -85,12 +72,17 @@
     <!--Description Edit Option-->
     <string name="textOption">Write in text panel below text to be pasted into image.
         To paste text form text panel click on image</string>
-    <string name="solidBrushOption">To draw filled rectangle click on
+    <string name="filledRectangleOption">To draw filled rectangle click on
     image and move finger to select size</string>
-    <string name="borderBrushOption">To draw a border click on the image
+    <string name="rectangleOption">To draw rectangle click on the image
+    and move finger to select size</string>
+    <string name="filledCircleOption">To draw filled circle click on
+    image and move finger to select size</string>
+    <string name="circleOption">To draw circle click on the image
     and move finger to select size</string>
     <string name="cutOption">To cut a rectangle from image click on image
     and move finger to select size to be removed</string>
+    <string name="penOption">To draw curves click on image and move finger to create shape</string>
 
     <!--Samples-->
     <string name="picture">Picture</string>

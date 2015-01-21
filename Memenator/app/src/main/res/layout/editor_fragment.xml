@@ -3,84 +3,140 @@
     android:id="@+id/scrollViewEditor"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
     <RelativeLayout
         android:id="@+id/editorRelativeLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-
-        <RelativeLayout android:id="@+id/layoutDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView android:id="@+id/optionEditionImage"
+        <RelativeLayout
+            android:id="@+id/editionLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <RadioGroup android:id="@+id/editionOption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/dotted_line"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:layout_alignBottom="@+id/editorDescription" />
+                android:orientation="vertical">
+                <RadioButton android:id="@+id/radio_pen"
+                    android:drawableRight="@drawable/ic_pen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pen"
+                    android:textSize="@dimen/button_font_size"/>
+                <RadioButton android:id="@+id/radio_rectangle"
+                    android:drawableRight="@drawable/ic_rectangle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rectangle"
+                    android:textSize="@dimen/button_font_size"/>
+                <RadioButton android:id="@+id/radio_filled_rectangle"
+                    android:drawableRight="@drawable/ic_filled_rectangle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filled_rectangle"
+                    android:textSize="@dimen/button_font_size"/>
+                <RadioButton android:id="@+id/radio_circle"
+                    android:drawableRight="@drawable/ic_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/circle"
+                    android:textSize="@dimen/button_font_size"/>
+                <RadioButton android:id="@+id/radio_filled_circle"
+                    android:drawableRight="@drawable/ic_filled_ellipse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filled_circle"
+                    android:textSize="@dimen/button_font_size"/>
+                <RadioButton android:id="@+id/radio_text"
+                    android:drawableRight="@drawable/ic_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text"
+                    android:textSize="@dimen/button_font_size" />
+                <RadioButton android:id="@+id/radio_cut"
+                    android:drawableRight="@drawable/ic_cut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cut"
+                    android:textSize="@dimen/button_font_size" />
+            </RadioGroup>
 
-            <TextView
-                android:id="@+id/editorDescription"
+            <RelativeLayout android:id="@+id/layoutDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:text="@string/textOption"
-                android:background="@drawable/dotted_line"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_toRightOf="@+id/optionEditionImage"
-                android:layout_marginRight="@dimen/small_margin" />
+                android:layout_toRightOf="@+id/editionOption">
+
+                <TextView
+                    android:id="@+id/editorDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center"
+                    android:text="@string/textOption"
+                    android:background="@drawable/dotted_line"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/small_margin"
+                    android:layout_marginLeft="@dimen/small_margin" />
             </RelativeLayout>
 
-        <RelativeLayout android:id="@+id/additionalImageProcessingOptions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layoutDescription">
-            <Button android:id="@+id/changeColorButton"
-                android:layout_margin="@dimen/small_margin"
-                android:layout_width="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_height="wrap_content"
-                android:onClick="changeColorClick"
-                android:text="@string/button_change_color"/>
-            <TextView android:id="@+id/labelWriteText"
+            <RelativeLayout android:id="@+id/additionalImageProcessingOptions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dotted_line"
-                android:text="@string/write_text"
-                android:layout_below="@id/changeColorButton"
-                android:layout_alignRight="@+id/changeColorButton"
-                android:layout_alignLeft="@+id/changeColorButton" />
-            <EditText android:id="@+id/textToPasteIntoEditedImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="@dimen/publish_text_panel_width"
-                android:background="@color/background_publish_text_panel"
-                android:layout_below="@id/changeColorButton"
-                android:layout_alignBottom="@+id/labelWriteText"
-                android:layout_alignLeft="@+id/selectedColor"
-                android:layout_marginRight="@dimen/small_margin" />
-            <Button android:id="@+id/changeFontButton"
-                android:layout_margin="@dimen/small_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="changeFontClick"
-                android:minWidth="@dimen/publish_text_panel_width"
-                android:layout_below="@id/changeColorButton"
-                android:layout_alignBottom="@+id/labelWriteText"
-                android:text="@string/button_change_font"
-                android:layout_toRightOf="@+id/textToPasteIntoEditedImage" />
+                android:layout_below="@+id/layoutDescription"
+                android:layout_toRightOf="@+id/editionOption">
+                <Button android:id="@+id/changeColorButton"
+                    android:layout_margin="@dimen/small_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_height="wrap_content"
+                    android:onClick="changeColorClick"
+                    android:text="@string/button_change_color"/>
+                <TextView android:id="@+id/labelWriteText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dotted_line"
+                    android:text="@string/write_text"
+                    android:layout_below="@+id/changeFontButton"
+                    android:layout_toRightOf="@+id/selectedColor"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_alignRight="@+id/changeFontButton"
+                    android:layout_marginRight="@dimen/small_margin" />
+                <EditText android:id="@+id/textToPasteIntoEditedImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:minWidth="@dimen/publish_text_panel_width"
+                    android:background="@color/background_publish_text_panel"
+                    android:layout_below="@+id/labelWriteText"
+                    android:layout_alignParentRight="true"
+                    android:layout_toLeftOf="@+id/selectedColor"
+                    android:layout_alignLeft="@+id/selectedColor"
+                    android:layout_marginRight="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_alignParentBottom="true" />
+                <TextView android:id="@+id/selectedColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="@dimen/circle_diameter"
+                    android:minHeight="@dimen/average_margin"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentBottom="false"
+                    android:ellipsize="start"
+                    android:onClick="changeColorClick"
+                    android:layout_below="@+id/changeColorButton"
+                    android:layout_marginLeft="@dimen/small_margin"
+                    android:layout_marginRight="@dimen/small_margin" />
+                <Button android:id="@+id/changeFontButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:onClick="changeFontClick"
+                    android:minWidth="@dimen/publish_text_panel_width"
+                    android:text="@string/button_change_font"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentLeft="false"
+                    android:layout_toRightOf="@+id/changeColorButton"
+                    android:layout_marginTop="@dimen/small_margin" />
+            </RelativeLayout>
 
-            <TextView android:id="@+id/selectedColor"
-                android:layout_margin="@dimen/small_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/changeColorButton"
-                android:minWidth="@dimen/circle_diameter"
-                android:layout_toRightOf="@id/changeColorButton"
-                android:minHeight="@dimen/average_margin" />
         </RelativeLayout>
 
         <Button
@@ -92,14 +148,14 @@
             android:height="@dimen/publish_text_panel_height"
             android:minHeight="@dimen/publish_text_panel_height"
             android:text="@string/save_image"
-            android:layout_marginTop="@dimen/small_margin"
-            android:onClick="saveImageOnDisc" />
+            android:onClick="saveImageOnDisc"
+            android:layout_marginTop="@dimen/average_margin" />
 
         <ImageView
             android:id="@+id/editorImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/additionalImageProcessingOptions"
+            android:layout_below="@+id/editionLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/average_margin"
             android:layout_marginRight="@dimen/average_margin"
@@ -114,7 +170,8 @@
             android:layout_below="@+id/btnSaveImage"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:background="@drawable/dotted_line">
+            android:background="@drawable/dotted_line"
+            android:layout_marginBottom="@dimen/average_margin">
 
             <ImageView
                 android:id="@+id/imageFacebook"
@@ -139,8 +196,11 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="@dimen/small_margin"
                 android:layout_toRightOf="@+id/publishText"
-                android:text="@string/publish_button" />
+                android:text="@string/publish_button"
+                android:onClick="publishStory"/>
         </RelativeLayout>
+
+
 
     </RelativeLayout>
 

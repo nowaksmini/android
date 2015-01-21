@@ -16,6 +16,10 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import mem.memenator.R;
 
 /**
@@ -24,6 +28,9 @@ import mem.memenator.R;
 public class LoggingFragment extends Fragment {
 
     private UiLifecycleHelper uiHelper;
+    public static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+    public static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
+    public static boolean pendingPublishReauthorization = false;
     private static final String TAG = "LoggingFragment";
     // for listening for session status changing logic
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -41,6 +48,10 @@ public class LoggingFragment extends Fragment {
         view = inflater.inflate(R.layout.facebook_logging_fragment, container, false);
         LoginButton authButton = (LoginButton) view.findViewById(R.id.login_button);
         authButton.setFragment(this);
+        if (savedInstanceState != null) {
+            pendingPublishReauthorization =
+                    savedInstanceState.getBoolean(PENDING_PUBLISH_KEY, false);
+        }
         return view;
     }
 
@@ -95,6 +106,7 @@ public class LoggingFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(PENDING_PUBLISH_KEY, pendingPublishReauthorization);
         uiHelper.onSaveInstanceState(outState);
     }
 
@@ -102,7 +114,65 @@ public class LoggingFragment extends Fragment {
         if (session != null && session.isOpened()) {
             // Get the user's data.
             makeMeRequest(session);
+            if (pendingPublishReauthorization &&
+                    state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
+                pendingPublishReauthorization = false;
+                publishStory();
+            }
         }
+    }
+
+    public void publishStory() {
+        Session session = Session.getActiveSession();
+
+        if (session != null){
+
+            // Check for publish permissions
+            List<String> permissions = session.getPermissions();
+            if (!isSubsetOf(PERMISSIONS, permissions)) {
+                LoggingFragment.pendingPublishReauthorization = true;
+                Session.NewPermissionsRequest newPermissionsRequest = new Session
+                        .NewPermissionsRequest(this, PERMISSIONS);
+                session.requestNewPublishPermissions(newPermissionsRequest);
+                return;
+            }
+
+//            Bundle postParams = new Bundle();
+//            postParams.putString("name", "Facebook SDK for Android");
+//            postParams.putString("caption", "Build great social apps and get more installs.");
+//            postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+//            postParams.putString("link", "https://developers.facebook.com/android");
+//            postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+//            final Context context = view.getContext();
+//            Request.Callback callback= new Request.Callback() {
+//                public void onCompleted(Response response) {
+//                    JSONObject graphResponse = response
+//                            .getGraphObject()
+//                            .getInnerJSONObject();
+//                    FacebookRequestError error = response.getError();
+//                    if (error != null) {
+//                        Toast.makeText(context, error.getErrorMessage(),
+//                                Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Toast.makeText(context,"Your post is on facebook",Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            };
+//
+//            Request request = new Request(session, "me/feed", postParams,
+//                    HttpMethod.POST, callback);
+//            RequestAsyncTask task = new RequestAsyncTask(request);
+//            task.execute();
+        }
+    }
+
+    private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
+        for (String string : subset) {
+            if (!superset.contains(string)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void makeMeRequest(final Session session) {

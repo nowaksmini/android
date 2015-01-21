@@ -17,20 +17,34 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.facebook.AppEventsLogger;
+import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
+import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import mem.memenator.adapters.TabsPagerAdapter;
 import mem.memenator.fonts.FontPickerDialog;
 import mem.memenator.logging.LoggingActivity;
+import mem.memenator.logging.LoggingFragment;
 import mem.memenator.options_fragments.EditorFragment;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -49,7 +63,17 @@ public class MainActivity extends FragmentActivity implements
     // used to store app title
     private CharSequence mTitle;
     // slide menu items
-    private String[] navMenuTitles;
+    private String[] tabTitles;
+    private UiLifecycleHelper uiHelper;
+    public static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+    public static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
+    public static boolean pendingPublishReauthorization = false;
+    private Session.StatusCallback callback = new Session.StatusCallback() {
+        @Override
+        public void call(Session session, SessionState state, Exception exception) {
+            onSessionStateChange(session, state, exception);
+        }
+    };
 
 
     @Override
@@ -59,7 +83,7 @@ public class MainActivity extends FragmentActivity implements
         mTitle = getTitle();
         mDriverIcon = R.drawable.ic_rainbow;
         // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.tabs_items);
+        tabTitles = getResources().getStringArray(R.array.tabs_items);
         this.changeActionBarTitleAndIcon();
         ProfilePictureView profilePictureView = (ProfilePictureView) this.findViewById
                 (R.id.selection_profile_pic);
@@ -91,7 +115,7 @@ public class MainActivity extends FragmentActivity implements
         // tabs should stay under action bar
         forceTabs();
         // Adding Tabs
-        for (String tab_name : navMenuTitles) {
+        for (String tab_name : tabTitles) {
             actionBar.addTab(actionBar.newTab().setText(tab_name)
                     .setTabListener(this));
         }
@@ -105,7 +129,7 @@ public class MainActivity extends FragmentActivity implements
                 // on changing the page
                 // make respected tab selected
                 actionBar.setSelectedNavigationItem(position);
-                mTitle = navMenuTitles[position];
+                mTitle = tabTitles[position];
                 mDriverIcon = getResources()
                         .obtainTypedArray(R.array.tab_icons).getResourceId(position, R.drawable.ic_rainbow);
                 updateActionBar();
@@ -119,6 +143,12 @@ public class MainActivity extends FragmentActivity implements
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+        uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            pendingPublishReauthorization =
+                    savedInstanceState.getBoolean(PENDING_PUBLISH_KEY, false);
+        }
     }
 
     @Override
@@ -132,7 +162,7 @@ public class MainActivity extends FragmentActivity implements
         // on tab selected
         // show respected fragment view
         viewPager.setCurrentItem(tab.getPosition());
-        mTitle = navMenuTitles[tab.getPosition()];
+        mTitle = tabTitles[tab.getPosition()];
         mDriverIcon = getResources().obtainTypedArray(R.array.tab_icons).getResourceId
                 (tab.getPosition(), R.drawable.ic_rainbow);
         updateActionBar();
@@ -216,6 +246,17 @@ public class MainActivity extends FragmentActivity implements
         super.onResume();
         // Logs 'install' and 'app activate' App Events.
         AppEventsLogger.activateApp(this);
+        Session session = Session.getActiveSession();
+        if (session != null &&(session.isOpened() || session.isClosed())) {
+            onSessionStateChange(session, session.getState(), null);
+        }
+        uiHelper.onResume();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -223,6 +264,31 @@ public class MainActivity extends FragmentActivity implements
         super.onPause();
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(PENDING_PUBLISH_KEY, pendingPublishReauthorization);
+        uiHelper.onSaveInstanceState(outState);
+    }
+
+    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+        if (session != null && session.isOpened()) {
+            // Get the user's data.
+            if (pendingPublishReauthorization &&
+                    state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
+                pendingPublishReauthorization = false;
+                publishStory(null);
+            }
+        }
     }
 
     private void changeActionBarTitleAndIcon() {
@@ -327,6 +393,74 @@ public class MainActivity extends FragmentActivity implements
         catch(final Exception e) {
             Log.e("Cannot force action bar tabs to stay under action bar",e.getMessage());
         }
+    }
+
+    public void publishStory(View view) {
+        Session session = Session.getActiveSession();
+
+        if (session != null){
+
+            // Check for publish permissions
+            List<String> permissions = session.getPermissions();
+            if (!isSubsetOf(PERMISSIONS, permissions)) {
+                LoggingFragment.pendingPublishReauthorization = true;
+                Session.NewPermissionsRequest newPermissionsRequest = new Session
+                        .NewPermissionsRequest(this, PERMISSIONS);
+                session.requestNewPublishPermissions(newPermissionsRequest);
+                return;
+            }
+
+            Bundle postParams = new Bundle();
+            postParams.putString("message", "Facebook la la la");
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            editedPicture.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            postParams.putByteArray("picture",byteArray);
+
+            Request.Callback callback= new Request.Callback() {
+                public void onCompleted(Response response) {
+                    FacebookRequestError error = response.getError();
+                    if (error != null) {
+                        Toast.makeText(getApplicationContext(),error.getErrorMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(),"Your post is on facebook",Toast.LENGTH_LONG).show();
+                    }
+                }
+            };
+
+            Request request = new Request(session, "me/photos", postParams,
+                    HttpMethod.POST, callback);
+            RequestAsyncTask task = new RequestAsyncTask(request);
+            task.execute();
+        }
+    }
+
+    private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
+        for (String string : subset) {
+            if (!superset.contains(string)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void makeMeRequest(final Session session) {
+        // Make an API call to get user data and define a
+        // new callback to handle the response.
+        Request request = Request.newMeRequest(session,
+                new Request.GraphUserCallback() {
+                    @Override
+                    public void onCompleted(GraphUser user, Response response) {
+                        // If the response is successful
+                        if (session == Session.getActiveSession()) {
+                            if (user != null) {
+
+                            }
+                        }
+                    }
+                });
+        request.executeAsync();
     }
 }
 

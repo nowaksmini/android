@@ -8,9 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import mem.memenator.options_fragments.FindPeopleFragment;
+import mem.memenator.options_fragments.EditorFragment;
+import mem.memenator.options_fragments.SendByBluetoothFragment;
 import mem.memenator.options_fragments.GalleryFragment;
-import mem.memenator.options_fragments.HomeFragment;
 import mem.memenator.options_fragments.PhotoFragment;
 import mem.memenator.options_fragments.SamplesFragment;
 
@@ -25,15 +25,15 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
-                return new HomeFragment();
+                return new EditorFragment();
             case 1:
-                return new FindPeopleFragment();
+                return new SendByBluetoothFragment();
             case 2:
                 // show only my memes
                 return new GalleryFragment(false);
             case 3:
                 // whole gallery
-                return new GalleryFragment(false);
+                return new GalleryFragment(true);
             case 4:
                 return new SamplesFragment();
             case 5:

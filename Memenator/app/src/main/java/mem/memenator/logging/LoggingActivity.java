@@ -92,7 +92,7 @@ public class LoggingActivity extends FragmentActivity {
         if (index == MAIN_PANEL) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-            finish();
+            //finish();
         } else if (index == LOGGING_PANEL) {
             loggingFragment = new LoggingFragment();
             getSupportFragmentManager()

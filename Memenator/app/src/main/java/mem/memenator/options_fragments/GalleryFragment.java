@@ -32,10 +32,10 @@ import mem.memenator.R;
  * Fragment shown after left navigation select gallery
  */
 public class GalleryFragment extends Fragment {
-    private boolean allImages=false;
+    private boolean allImages = false;
     private int count;
     private Bitmap[] thumbnails;
-    private Boolean[] thumbnailsselection;
+    private Boolean[] thumbnailsSelection;
     private boolean oneSelect;
     private String[] arrPath;
     private ImageAdapter imageAdapter;
@@ -44,36 +44,38 @@ public class GalleryFragment extends Fragment {
 
 
     @SuppressLint("ValidFragment")
-    public GalleryFragment(boolean allImages){
+    public GalleryFragment(boolean allImages) {
         this.allImages = allImages;
     }
-    public GalleryFragment (){}
 
-    /** Called when the activity is first created. */
+    public GalleryFragment() {
+    }
+
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.gallery_fragment, container, false);
         context = rootView.getContext();
-        final String[] columns = { MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID };
+        final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
         final String orderBy = MediaStore.Images.Media._ID;
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         savePath = uri.getPath();
-        if(!isExternalStorageReadable() || !isExternalStorageWritable())
-        {
+        if (!isExternalStorageReadable() || !isExternalStorageWritable()) {
             return rootView;
+        } else if (!allImages) {
+            //   SharedPreferences settings = rootView.getContext().getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
+            // savePath = settings.getString(getResources().getString(R.string.path_key), "");
+            //  savePath = Environment.getExternalStoragePublicDirectory(savePath).getPath();
+            savePath = "MemenatorMyMeme";
         }
-        else if(!allImages){
-         //   SharedPreferences settings = rootView.getContext().getSharedPreferences(getResources().getString(R.string.shared_preferences_file), 0);
-           // savePath = settings.getString(getResources().getString(R.string.path_key), "");
-          //  savePath = Environment.getExternalStoragePublicDirectory(savePath).getPath();
-            savePath="MemenatorMyMeme";
-        }
-        if(allImages) savePath = "";
-        final String[] selectionArgs = {"%" +  savePath + "%"};
-        final String selection = MediaStore.Images.ImageColumns.TITLE+ " like ?";
-        Cursor imagecursor = context.getContentResolver().query(uri, columns,selection,selectionArgs, orderBy);
+        if (allImages) savePath = "";
+        final String[] selectionArgs = {"%" + savePath + "%"};
+        final String selection = MediaStore.Images.ImageColumns.TITLE + " like ?";
+        Cursor imagecursor = context.getContentResolver().query(uri, columns, selection, selectionArgs, orderBy);
         if (imagecursor == null) {
             ((Button) rootView.findViewById(R.id.selectBtn)).setVisibility(View.INVISIBLE);
             return rootView;
@@ -82,16 +84,16 @@ public class GalleryFragment extends Fragment {
         this.count = imagecursor.getCount();
         this.thumbnails = new Bitmap[this.count];
         this.arrPath = new String[this.count];
-        this.thumbnailsselection = new Boolean[this.count];
+        this.thumbnailsSelection = new Boolean[this.count];
         for (int i = 0; i < this.count; i++) {
-            thumbnailsselection[i] = false;
+            thumbnailsSelection[i] = false;
             imagecursor.moveToPosition(i);
             int id = imagecursor.getInt(image_column_index);
             int dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Images.Media.DATA);
             thumbnails[i] = MediaStore.Images.Thumbnails.getThumbnail(
                     context.getContentResolver(), id,
                     MediaStore.Images.Thumbnails.MICRO_KIND, null); // KIND if like size
-            arrPath[i]= imagecursor.getString(dataColumnIndex);
+            arrPath[i] = imagecursor.getString(dataColumnIndex);
         }
 
         GridView imagegrid = (GridView) rootView.findViewById(R.id.PhoneImageGrid);
@@ -107,7 +109,7 @@ public class GalleryFragment extends Fragment {
                 String selectImages = "";
                 List<String> selectedImagesPath = new LinkedList<String>();
                 for (int i = 0; i < len; i++) {
-                    if (thumbnailsselection[i]) {
+                    if (thumbnailsSelection[i]) {
                         cnt++;
                         selectedImagesPath.add(arrPath[i]);
                         selectImages = selectImages + arrPath[i] + "|";
@@ -118,11 +120,10 @@ public class GalleryFragment extends Fragment {
                             getResources().getString(R.string.select_at_least_one_photo),
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(context,getResources().getString(R.string.selected_images_prefix)
-                                    + cnt + getResources().getString(R.string.selected_images_suffix),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, getResources().getString(R.string.selected_images_prefix)
+                                    + " " + cnt + " " + getResources().getString
+                                    (R.string.selected_images_suffix),Toast.LENGTH_LONG).show();
                     Log.d("SelectedImages", selectImages);
-                    // Toast = Window.Alert();
                     MainActivity.pictureToEditPath = selectedImagesPath.get(0);
                     MainActivity.editedPicture = null;
 
@@ -180,8 +181,7 @@ public class GalleryFragment extends Fragment {
                 holder.imageview = (ImageView) convertView.findViewById(R.id.thumbImage);
                 holder.checkbox = (CheckBox) convertView.findViewById(R.id.itemCheckBox);
                 convertView.setTag(holder);
-            }
-            else {
+            } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.checkbox.setId(position);
@@ -191,17 +191,15 @@ public class GalleryFragment extends Fragment {
                 public void onClick(View v) {
                     CheckBox cb = (CheckBox) v;
                     int id = cb.getId();
-                    if (thumbnailsselection[id]){
+                    if (thumbnailsSelection[id]) {
                         cb.setChecked(false);
-                        thumbnailsselection[id] = false;
+                        thumbnailsSelection[id] = false;
                         oneSelect = false;
-                    } else if((allImages && !oneSelect)||(!allImages))
-                        {
-                            cb.setChecked(true);
-                            thumbnailsselection[id] = true;
-                            oneSelect = true;
-                        }
-                    else {
+                    } else if ((allImages && !oneSelect) || (!allImages)) {
+                        cb.setChecked(true);
+                        thumbnailsSelection[id] = true;
+                        oneSelect = true;
+                    } else {
                         cb.setChecked(false);
                     }
                 }
@@ -213,12 +211,12 @@ public class GalleryFragment extends Fragment {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.setDataAndType(Uri.parse("file://" + arrPath[id]), "image/*");
-                        startActivity(intent);
+                    startActivity(intent);
                 }
             });
-            if (position < thumbnailsselection.length) {
+            if (position < thumbnailsSelection.length) {
                 holder.imageview.setImageBitmap(thumbnails[position]);
-                holder.checkbox.setChecked(thumbnailsselection[position]);
+                holder.checkbox.setChecked(thumbnailsSelection[position]);
                 holder.id = position;
             }
             return convertView;

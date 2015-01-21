@@ -5,8 +5,11 @@ package mem.memenator.model;
  * Do not change position
  */
 public enum EditActionType {
-    SolidBrush,
+    Pen,
+    Rectangle,
+    FilledRectangle,
+    Circle,
+    FilledCircle,
     Text,
-    Cut,
-    Border
+    Cut
 }
