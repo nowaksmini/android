@@ -24,7 +24,7 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.List;
 
-import mem.memenator.MainActivity1;
+import mem.memenator.MainActivity;
 import mem.memenator.R;
 
 
@@ -32,7 +32,7 @@ import mem.memenator.R;
  * Fragment shown after left navigation select gallery
  */
 public class GalleryFragment extends Fragment {
-    private boolean allImages=true;
+    private boolean allImages=false;
     private int count;
     private Bitmap[] thumbnails;
     private Boolean[] thumbnailsselection;
@@ -123,8 +123,8 @@ public class GalleryFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                     Log.d("SelectedImages", selectImages);
                     // Toast = Window.Alert();
-                    MainActivity1.pictureToEditPath = selectedImagesPath.get(0);
-                    MainActivity1.editedPicture = null;
+                    MainActivity.pictureToEditPath = selectedImagesPath.get(0);
+                    MainActivity.editedPicture = null;
 
                 }
             }

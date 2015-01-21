@@ -5,19 +5,19 @@
     <string name="log_out">Log Out</string>
     <string name="action_settings">Settings</string>
     <string name="images_album">memenator</string>
-    <!-- Left Nav Drawer Menu Items -->
-    <string-array name="left_nav_drawer_items">
+    <!-- Action Bar Tabs Items -->
+    <string-array name="tabs_items">
         <item>Home</item>
+        <item>Send Memes</item>
         <item>My Memes</item>
-        <item>Find People</item>
+        <item>Gallery</item>
+        <item>Samples</item>
+        <item>Camera</item>
     </string-array>
 
     <!-- Right Nav Drawer Menu Items -->
     <string-array name="right_nav_drawer_items">
         <item>Edit</item>
-        <item>Gallery</item>
-        <item>Samples</item>
-        <item>Camera</item>
     </string-array>
     <string-array name="right_edit_nav_drawer_items">
         <item>Solid Brush</item>
@@ -27,11 +27,13 @@
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
-    <array name="left_nav_drawer_icons">
+    <array name="tab_icons">
         <item>@drawable/ic_home</item>
-        <item>@drawable/ic_photo</item>
         <item>@drawable/ic_search</item>
-        <item>@drawable/ic_friends</item>
+        <item>@drawable/ic_photo</item>
+        <item>@drawable/ic_gallery</item>
+        <item>@drawable/ic_sample</item>
+        <item>@drawable/ic_camera</item>
     </array>
     <array name="right_nav_drawer_icons">
         <item>@drawable/ic_edit</item>

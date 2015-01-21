@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mem.memenator.MainActivity1;
+import mem.memenator.MainActivity;
 import mem.memenator.R;
 import mem.memenator.adapters.ExpandableNavDrawerListAdapter;
 import mem.memenator.model.EditActionType;
@@ -67,12 +67,6 @@ public class HomeFragment extends Fragment {
         // adding nav drawer items to array
         // Edit
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Gallery
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Samples
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, rootView.getResources().getIntArray(R.array.samples_icons).length+""));
-        // Camera
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         // Recycle the typed array
         navMenuIcons.recycle();
         mDrawerList.setOnGroupClickListener(new SlideMenuClickListener());
@@ -126,7 +120,7 @@ public class HomeFragment extends Fragment {
                 R.string.app_name // nav drawer close - description for accessibility
         ) {
             public void onDrawerClosed(View view) {
-                MainActivity1.mDriverIcon = myIcon;
+                MainActivity.mDriverIcon = myIcon;
                 getActivity().getActionBar().setIcon(myIcon);
                 getActivity().getActionBar().setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
@@ -208,7 +202,7 @@ public class HomeFragment extends Fragment {
         }
 
         if (fragment != null) {
-            MainActivity1.mDriverIcon = myIcon;
+            MainActivity.mDriverIcon = myIcon;
             getActivity().getActionBar().setIcon(myIcon);
             getActivity().getActionBar().setTitle(mDrawerTitle);
             FragmentManager fragmentManager = getFragmentManager();

@@ -16,7 +16,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -29,4 +29,5 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.1.0'
     compile project(':colorPicker')
     compile project(':facebook')
+    compile 'com.android.support:support-v4:21.0.3'
 }

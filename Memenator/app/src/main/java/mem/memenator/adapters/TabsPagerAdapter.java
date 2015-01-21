@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import mem.memenator.options_fragments.FindPeopleFragment;
 import mem.memenator.options_fragments.GalleryFragment;
 import mem.memenator.options_fragments.HomeFragment;
+import mem.memenator.options_fragments.PhotoFragment;
+import mem.memenator.options_fragments.SamplesFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
@@ -27,8 +29,15 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new FindPeopleFragment();
             case 2:
-                // show only samples
+                // show only my memes
                 return new GalleryFragment(false);
+            case 3:
+                // whole gallery
+                return new GalleryFragment(false);
+            case 4:
+                return new SamplesFragment();
+            case 5:
+                return new PhotoFragment();
         }
 
         return null;
@@ -37,7 +46,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // get item count - equal to number of tabs
-        return 3;
+        return 6;
     }
 
 }

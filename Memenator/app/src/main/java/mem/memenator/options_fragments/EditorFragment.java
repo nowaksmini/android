@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import mem.memenator.MainActivity1;
+import mem.memenator.MainActivity;
 import mem.memenator.R;
 import mem.memenator.model.EditActionType;
 
@@ -130,27 +130,27 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     private void resetEditedImage() {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
         imageView.setOnTouchListener(this);
-        if (MainActivity1.editedPicture != null) {
+        if (MainActivity.editedPicture != null) {
             // there is a Copy to load into ImageView in Editor
-            imageView.setImageBitmap(MainActivity1.editedPicture);
-            copy = MainActivity1.editedPicture.copy(MainActivity1.editedPicture.getConfig(), true);
-        } else if (MainActivity1.pictureToEditPath != null) {
+            imageView.setImageBitmap(MainActivity.editedPicture);
+            copy = MainActivity.editedPicture.copy(MainActivity.editedPicture.getConfig(), true);
+        } else if (MainActivity.pictureToEditPath != null) {
             // open image form director, create copy, save copy in application, load image to ImageView in editor
-            File imgFile = new File(MainActivity1.pictureToEditPath);
+            File imgFile = new File(MainActivity.pictureToEditPath);
             if (imgFile.exists()) {
                 copy = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 imageView.setImageBitmap(copy);
                 double newHeight = getResources().getDimension(R.dimen.image_edited_width) * copy.getHeight() / copy.getWidth();
                 copy = copy.createScaledBitmap(copy, (int) getResources().getDimension(R.dimen.image_edited_width), (int) (newHeight), true);
-                MainActivity1.editedPicture = copy;
+                MainActivity.editedPicture = copy;
             }
         }
     }
 
     private void putImage() {
-        MainActivity1.editedPicture = copy;
+        MainActivity.editedPicture = copy;
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
-        imageView.setImageBitmap(MainActivity1.editedPicture);
+        imageView.setImageBitmap(MainActivity.editedPicture);
     }
 
     private void PutPixel(Bitmap bitmap, int x, int y, int color) {
@@ -165,9 +165,9 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
 
     private void RedrawImage() {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
-        if (MainActivity1.editedPicture != null) {
-            imageView.setImageBitmap(MainActivity1.editedPicture);
-            copy = MainActivity1.editedPicture.copy(MainActivity1.editedPicture.getConfig(), true);
+        if (MainActivity.editedPicture != null) {
+            imageView.setImageBitmap(MainActivity.editedPicture);
+            copy = MainActivity.editedPicture.copy(MainActivity.editedPicture.getConfig(), true);
         }
     }
 

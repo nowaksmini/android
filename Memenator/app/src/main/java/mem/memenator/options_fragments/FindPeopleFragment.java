@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import mem.memenator.MainActivity1;
+import mem.memenator.MainActivity;
 import mem.memenator.R;
 import mem.memenator.adapters.PicAdapter;
 import mem.memenator.wifi.MemenatorClientAsyncTask;
@@ -81,7 +81,7 @@ public class FindPeopleFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                    MainActivity1.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
+                    MainActivity.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
                 } catch (Exception e) {
                 }
                 Toast.makeText(rootView.getContext(), rootView.getResources().getString(R.string.successfully_selected_sample), Toast.LENGTH_LONG).show();
@@ -178,7 +178,7 @@ public class FindPeopleFragment extends Fragment {
                     @Override
                     public void onSuccess() {
                         //success logic
-                        Tasks.add(new MemenatorClientAsyncTask(MainActivity1.editedPicture, deviceInfo.deviceAddress));
+                        Tasks.add(new MemenatorClientAsyncTask(MainActivity.editedPicture, deviceInfo.deviceAddress));
                     }
 
                     @Override
