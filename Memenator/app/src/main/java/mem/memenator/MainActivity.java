@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -64,7 +65,7 @@ public class MainActivity extends FragmentActivity implements
     // slide menu items
     private String[] tabTitles;
     private UiLifecycleHelper uiHelper;
-    public static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+    public static final List<String> PERMISSIONS = Arrays.asList("public_profile");
     public static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
     public static boolean pendingPublishReauthorization = false;
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -179,7 +180,16 @@ public class MainActivity extends FragmentActivity implements
 
     @Override
     public void onFontSelected(FontPickerDialog dialog) {
-        Toast.makeText(this.getBaseContext(), dialog.getSelectedFont(), Toast.LENGTH_LONG);
+        Toast.makeText(this.getBaseContext(), dialog.getSelectedFont(), Toast.LENGTH_LONG).show();
+        if (dialog.getSelectedFont().contains("Bold") && dialog.getSelectedFont().contains("Italic"))
+            EditorFragment.FONT_ADDITIONAL_STYLE = Typeface.BOLD_ITALIC;
+        else if (dialog.getSelectedFont().contains("Bold"))
+            EditorFragment.FONT_ADDITIONAL_STYLE = Typeface.BOLD;
+        else if (dialog.getSelectedFont().contains("Italic"))
+            EditorFragment.FONT_ADDITIONAL_STYLE = Typeface.ITALIC;
+        else EditorFragment.FONT_ADDITIONAL_STYLE = Typeface.NORMAL;
+        EditorFragment.FONT_STYLE = dialog.getSelectedFont().replaceAll("Bold", "")
+                .replaceAll("Italic", "").replaceAll("Normal", "").replaceAll("  ", " ").trim();
     }
 
     @Override
@@ -246,7 +256,7 @@ public class MainActivity extends FragmentActivity implements
         // Logs 'install' and 'app activate' App Events.
         AppEventsLogger.activateApp(this);
         Session session = Session.getActiveSession();
-        if (session != null &&(session.isOpened() || session.isClosed())) {
+        if (session != null && (session.isOpened() || session.isClosed())) {
             onSessionStateChange(session, session.getState(), null);
         }
         uiHelper.onResume();
@@ -389,16 +399,15 @@ public class MainActivity extends FragmentActivity implements
                     .getDeclaredMethod("setHasEmbeddedTabs", boolean.class);
             setHasEmbeddedTabsMethod.setAccessible(true);
             setHasEmbeddedTabsMethod.invoke(actionBar, false);
-        }
-        catch(final Exception e) {
-            Log.e("Cannot force action bar tabs to stay under action bar",e.getMessage());
+        } catch (final Exception e) {
+            Log.e("Cannot force action bar tabs to stay under action bar", e.getMessage());
         }
     }
 
     public void publishStory(View view) {
         Session session = Session.getActiveSession();
 
-        if (session != null && session.isOpened()){
+        if (session != null && session.isOpened()) {
 
             // Check for publish permissions
             List<String> permissions = session.getPermissions();

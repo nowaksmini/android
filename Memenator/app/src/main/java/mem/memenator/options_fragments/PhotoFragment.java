@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import mem.memenator.MainActivity;
 import mem.memenator.R;
 
 /**
@@ -59,19 +60,23 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
                          }
                      }
                  }
-        );
+                );
         jpegCallback = new Camera.PictureCallback() {
             public void onPictureTaken(byte[] data, Camera camera) {
                 FileOutputStream outStream = null;
                 try {
-                    String path =String.format(Environment.getExternalStorageDirectory().getPath() + "/%d.jpg", System.currentTimeMillis());
+                    String path = String.format(Environment.getExternalStorageDirectory().getPath() + "/%d.jpg", System.currentTimeMillis());
                     outStream = new FileOutputStream(path);
                     outStream.write(data);
                     outStream.flush();
                     outStream.close();
                     Toast.makeText(rootView.getContext(), getResources().getString(R.string.picture_saved), Toast.LENGTH_LONG).show();
                     File file = new File(path);
-                    MediaStore.Images.Media.insertImage(rootView.getContext().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+                    MediaStore.Images.Media.insertImage(rootView.getContext().getContentResolver(),
+                            file.getAbsolutePath(), file.getName(), file.getName());
+                    MainActivity.pictureToEditPath = path;
+                    MainActivity.editedPicture = null;
+                    getActivity().onBackPressed();
                     Log.d("Log", "onPictureTaken - wrote bytes: " + data.length);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

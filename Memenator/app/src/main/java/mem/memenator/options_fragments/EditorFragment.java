@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -50,6 +51,8 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     private Button changeFontButton;
     private static TextView selectedColor;
     private static final int PENSIZE = 5;
+    public static String FONT_STYLE = "Helvetica";
+    public static int FONT_ADDITIONAL_STYLE = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -238,15 +241,14 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
 
     }
 
-    private void PutPixel(float x,float y)
-    {
-     PutPixel(copy,(int)x,(int)y,COLOR);
+    private void PutPixel(float x, float y) {
+        PutPixel(copy, (int) x, (int) y, COLOR);
     }
-    private void DrawFilledEllipse(float x, float y, float a, float b, boolean case1)
-    {
+
+    private void DrawFilledEllipse(float x, float y, float a, float b, boolean case1) {
         float a2 = a * a;
         float b2 = b * b;
-        if(a2 ==0 || b2 == 0 ) return;
+        if (a2 == 0 || b2 == 0) return;
         float d = 4 * b2 - 4 * b * a2 + a2;
         float delta_A = 4 * 3 * b2;
         float delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2);
@@ -256,15 +258,13 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         while (true) {
 
             if (case1) {
-                for(float i = x - xDraw;i<=x+xDraw;i++)
-                {
+                for (float i = x - xDraw; i <= x + xDraw; i++) {
                     PutPixel(i, y + yDraw);
                     PutPixel(i, y - yDraw);
                 }
 
             } else {
-                for(float i = x - yDraw;i<=x+yDraw;i++)
-                {
+                for (float i = x - yDraw; i <= x + yDraw; i++) {
                     PutPixel(i, y + xDraw);
                     PutPixel(i, y - xDraw);
                 }
@@ -289,10 +289,11 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
             }
         }
     }
+
     private void DrawEllipse(float x, float y, float a, float b, boolean case1) {
         float a2 = a * a;
         float b2 = b * b;
-        if(a2 ==0 || b2 == 0 ) return;
+        if (a2 == 0 || b2 == 0) return;
         float d = 4 * b2 - 4 * b * a2 + a2;
         float delta_A = 4 * 3 * b2;
         float delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2);
@@ -339,14 +340,16 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
         imageView.setImageBitmap(copy);
     }
+
     private void DrawFilledEllipse(float x, float y, float a, float b) {
         DrawFilledEllipse(x, y, a, b, true);
         DrawFilledEllipse(x, y, b, a, false);
         ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
         imageView.setImageBitmap(copy);
     }
+
     private void recursivePenDraw(float x0, float y0, float x1, float y1) {
-        if (Math.abs(x0-x1)<0.5 && Math.abs(x0-x1)<0.5) {
+        if (Math.abs(x0 - x1) < 0.5 && Math.abs(x0 - x1) < 0.5) {
             return;
         }
         float x = (x0 + x1) / 2;
@@ -368,8 +371,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         float x = e.getX();
         float y = e.getY();
         switch (Action) {
-            case FilledCircle:
-           {
+            case FilledCircle: {
                 switch (e.getAction()) {
                     case MotionEvent.ACTION_MOVE:
                         this.RedrawImage();
@@ -528,6 +530,11 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         Paint paint = new Paint();
         paint.setColor(color);
         paint.setTextSize(20);
+        try {
+            paint.setTypeface(Typeface.create(FONT_STYLE, FONT_ADDITIONAL_STYLE));
+        } catch (Exception e) {
+            paint.setTypeface(Typeface.create("Helvetica", Typeface.NORMAL));
+        }
         Canvas canvas = new Canvas(copy);
         canvas.drawText(Text, (float) x, (float) y, paint);
     }

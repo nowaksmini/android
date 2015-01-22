@@ -60,6 +60,7 @@ public class SamplesFragment extends Fragment {
             public void onClick(View view) {
                 MainActivity.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
                 Toast.makeText(rootView.getContext(),rootView.getResources().getString(R.string.successfully_selected_sample),Toast.LENGTH_LONG).show();
+                getActivity().onBackPressed();
             }
         });
         return rootView;

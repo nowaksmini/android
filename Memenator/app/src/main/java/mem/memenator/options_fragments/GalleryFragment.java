@@ -126,7 +126,7 @@ public class GalleryFragment extends Fragment {
                     Log.d("SelectedImages", selectImages);
                     MainActivity.pictureToEditPath = selectedImagesPath.get(0);
                     MainActivity.editedPicture = null;
-
+                    getActivity().onBackPressed();
                 }
             }
         });

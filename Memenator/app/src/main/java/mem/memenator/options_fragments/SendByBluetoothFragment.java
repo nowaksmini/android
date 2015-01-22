@@ -74,9 +74,12 @@ public class SendByBluetoothFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     MainActivity.editedPicture = imgAdapt.getPic(picGallery.getSelectedItemPosition());
+                    Toast.makeText(rootView.getContext(), rootView.getResources().getString
+                            (R.string.successfully_selected_receive_image), Toast.LENGTH_LONG).show();
+                    getActivity().onBackPressed();
                 } catch (Exception e) {
+                    Log.e("Cannot choose received image", e.getMessage());
                 }
-                Toast.makeText(rootView.getContext(), rootView.getResources().getString(R.string.successfully_selected_sample), Toast.LENGTH_LONG).show();
             }
         });
         Button receiveBtn = (Button) rootView.findViewById(R.id.receiveBtn);
@@ -85,7 +88,7 @@ public class SendByBluetoothFragment extends Fragment {
             public void onClick(View v) {
                 if (!MemenatorBluetooth.isInitialized())
                     if (!MemenatorBluetooth.Initialize(((MainActivity) getActivity()))) {
-                        Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG);
+                        Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG).show();
                         return;
                     }
 
@@ -100,7 +103,7 @@ public class SendByBluetoothFragment extends Fragment {
                     }
                     t--;
                     if (t == 0) {
-                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG);
+                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
@@ -114,7 +117,7 @@ public class SendByBluetoothFragment extends Fragment {
             public void onClick(View v) {
                 if (!MemenatorBluetooth.isInitialized())
                     if (!MemenatorBluetooth.Initialize(((MainActivity) getActivity()))) {
-                        Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG);
+                        Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG).show();
                         return;
                     }
                 if (!MemenatorBluetooth.isConnectionEstablished())
@@ -128,7 +131,7 @@ public class SendByBluetoothFragment extends Fragment {
                     }
                     t--;
                     if (t == 0) {
-                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG);
+                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG).show();
                         return;
                     }
                 }

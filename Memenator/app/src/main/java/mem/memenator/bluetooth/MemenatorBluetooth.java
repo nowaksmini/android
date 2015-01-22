@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import mem.memenator.MainActivity;
@@ -26,6 +27,8 @@ public class MemenatorBluetooth {
     static private BluetoothAdapter mBluetoothAdapter;
     public static MainActivity mainActivity;
     private static ServerThread sThread;
+    private static ArrayList<ConnectThread> Threads;
+    static private ArrayList<BluetoothDevice> mPartner;
 
     static public boolean isInitialized() {
         return (mBluetoothAdapter != null);
@@ -33,6 +36,8 @@ public class MemenatorBluetooth {
 
     static public boolean Initialize(MainActivity mem) {
         mainActivity = mem;
+        Threads = new ArrayList<ConnectThread>();
+        mPartner = new ArrayList<BluetoothDevice>();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             return false;
@@ -43,16 +48,14 @@ public class MemenatorBluetooth {
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
         mem.startActivity(discoverableIntent);
-        if(!mBluetoothAdapter.isEnabled())
-        {
+        if (!mBluetoothAdapter.isEnabled()) {
             try {
                 Thread.sleep(2000, 0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(!mBluetoothAdapter.isEnabled())
-            {
-                mBluetoothAdapter=null;
+            if (!mBluetoothAdapter.isEnabled()) {
+                mBluetoothAdapter = null;
                 return false;
             }
         }
@@ -67,36 +70,41 @@ public class MemenatorBluetooth {
         mBluetoothAdapter.startDiscovery();
     }
 
-    static private BluetoothDevice mPartner;
 
-    public static void EstablishPair(BluetoothDevice device) {
-        mPartner = device;
+    static public void EstablishPair(BluetoothDevice device) {
+        mPartner.add(device);
     }
 
     static public boolean isConnectionEstablished() {
-        return (mPartner != null);
+        return (mPartner.size() > 0);
     }
 
     static public void SendPicture(Bitmap B) {
         BluetoothSocket mSocket;
-        try {
-            mSocket = mPartner.createRfcommSocketToServiceRecord(mUUID);
-        } catch (IOException e) {
-            return;
+        for (int i = 0; i < mPartner.size(); i++) {
+            try {
+                mSocket = mPartner.get(i).createRfcommSocketToServiceRecord(mUUID);
+            } catch (IOException e) {
+                continue;
+            }
+            Toast.makeText(mainActivity.getApplicationContext(), "Device Found :" + mPartner.get(i).getName() + " " + mPartner.get(i).getAddress(),
+                    Toast.LENGTH_LONG).show();
+            cThread = new ConnectThread(mPartner.get(i), mSocket, B);
+            cThread.start();
+            Threads.add(cThread);
         }
-        cThread = new ConnectThread(mPartner, mSocket, B);
-        cThread.run();
     }
 
     static public void ReceivePictures() {
         BluetoothServerSocket mSocket = null;
         try {
-            mSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Memenator", mUUID);
+            mSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("MemenatorBluetooth", mUUID);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        sThread = new ServerThread(mPartner,mSocket);
-        sThread.run();
+        sThread = new ServerThread(null, mSocket);
+        sThread.start();
+
     }
 
     static ConnectThread cThread;
@@ -104,7 +112,7 @@ public class MemenatorBluetooth {
     // if iamge was successfully sent
     static public void ImageSent(ConnectedThread CT) {
         CT.cancel();
-        Toast.makeText(mainActivity.getApplicationContext(), "Image from home successfully send ", Toast.LENGTH_LONG);
+        Toast.makeText(mainActivity.getApplicationContext(), "Image from home successfully send ", Toast.LENGTH_LONG).show();
     }
 
     static public void ImageReceived(ServerConnectedThread CT, Object[] image) {

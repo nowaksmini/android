@@ -50,6 +50,7 @@
     <string name="problem_saving_photo2">There was a problem during closing created new image from edited picture</string>
     <string name="problem_creating_album">There was a problem during creating an album for Memes</string>
     <string name="successfully_selected_sample">Successfully selected Sample</string>
+    <string name="successfully_selected_receive_image">Successfully selected Received Image</string>
     <string name="not_connected_wifi">Device cannot connect with devices through wifi. Code error = </string>
     <string name="connected_wifi">Device connected with devices through wifi. </string>
 

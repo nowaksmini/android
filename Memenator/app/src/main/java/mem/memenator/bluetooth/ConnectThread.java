@@ -48,7 +48,8 @@ public class ConnectThread extends Thread {
             CT.write(byteArray);
             MemenatorBluetooth.ImageSent(CT);
         } else {
-            CT.run();
+            CT.start();
         }
+
     }
 }

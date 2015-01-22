@@ -41,6 +41,6 @@ public class ServerThread extends Thread {
         }
         // Do work to manage the connection (in a separate thread)
         ServerConnectedThread CT = new ServerConnectedThread(tmpSocket);
-        CT.run();
+        CT.start();
     }
 }
