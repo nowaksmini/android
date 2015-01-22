@@ -102,12 +102,13 @@
     </string-array>
 
 
-    <!--FindPeople-->
-    <string name="fid_people_description">Press button receive to listen images and send for sharing your image through wifi</string>
+    <!--Bluetooth-->
+    <string name="fid_people_description">Press button receive to listen images and send for sharing your image through bluetooth</string>
     <string name="last_received_images">Last received images</string>
-    <string name="receive_btn">Receive Memes</string>
-    <string name="send_btn">Send Memes</string>
+    <string name="receive_btn">Receive Memes By Bluetooth</string>
+    <string name="send_btn">Send Meme From Home By Bluetooth</string>
     <string name="cancel">Cancel</string>
+    <string name="uuid">"390e5a54-a1d2-11e4-89d3-123b93f75cba"</string>
 
     <!--Facebook-->
     <string name="facebook_app_id">1541395889448486</string>

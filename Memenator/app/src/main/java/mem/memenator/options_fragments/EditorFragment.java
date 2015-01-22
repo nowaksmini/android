@@ -40,8 +40,8 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     private Bitmap copy;
     private View rootView;
     public static EditActionType Action;
-    private double startX;
-    private double startY;
+    private float startX;
+    private float startY;
     public static int COLOR = Color.BLACK;
     private static EditText editText;
     private TextView description;
@@ -49,6 +49,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
     private Button changeColorButton;
     private Button changeFontButton;
     private static TextView selectedColor;
+    private static final int PENSIZE = 5;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,11 +76,11 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         filledRectangle.setChecked(true);
         int count = editionOptions.getChildCount();
         ArrayList<RadioButton> listOfRadioButtons = new ArrayList<RadioButton>();
-        for (int i=0;i<count;i++) {
+        for (int i = 0; i < count; i++) {
             View o = editionOptions.getChildAt(i);
             if (o instanceof RadioButton) {
-                listOfRadioButtons.add((RadioButton)o);
-                ((RadioButton)o).setOnClickListener(new View.OnClickListener() {
+                listOfRadioButtons.add((RadioButton) o);
+                ((RadioButton) o).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onRadioButtonClicked(v);
@@ -237,6 +238,125 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
 
     }
 
+    private void PutPixel(float x,float y)
+    {
+     PutPixel(copy,(int)x,(int)y,COLOR);
+    }
+    private void DrawFilledEllipse(float x, float y, float a, float b, boolean case1)
+    {
+        float a2 = a * a;
+        float b2 = b * b;
+        if(a2 ==0 || b2 == 0 ) return;
+        float d = 4 * b2 - 4 * b * a2 + a2;
+        float delta_A = 4 * 3 * b2;
+        float delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2);
+        float limit = (a2 * a2) / (a2 + b2);
+        float xDraw = 0;
+        float yDraw = b;
+        while (true) {
+
+            if (case1) {
+                for(float i = x - xDraw;i<=x+xDraw;i++)
+                {
+                    PutPixel(i, y + yDraw);
+                    PutPixel(i, y - yDraw);
+                }
+
+            } else {
+                for(float i = x - yDraw;i<=x+yDraw;i++)
+                {
+                    PutPixel(i, y + xDraw);
+                    PutPixel(i, y - xDraw);
+                }
+
+            }
+            if (xDraw * xDraw >= limit) {
+                break;
+            }
+            if (d > 0) {
+                d += delta_B;
+                delta_A += 4 * 2 * b2;
+                delta_B += 4 * (2 * b2 + 2 * a2);
+
+                xDraw += 1;
+                yDraw -= 1;
+            } else {
+                d += delta_A;
+                delta_A += 4 * 2 * b2;
+                delta_B += 4 * 2 * b2;
+
+                xDraw += 1;
+            }
+        }
+    }
+    private void DrawEllipse(float x, float y, float a, float b, boolean case1) {
+        float a2 = a * a;
+        float b2 = b * b;
+        if(a2 ==0 || b2 == 0 ) return;
+        float d = 4 * b2 - 4 * b * a2 + a2;
+        float delta_A = 4 * 3 * b2;
+        float delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2);
+        float limit = (a2 * a2) / (a2 + b2);
+        float xDraw = 0;
+        float yDraw = b;
+        while (true) {
+
+            if (case1) {
+                PutPixel(x + xDraw, y + yDraw);
+                PutPixel(x - xDraw, y + yDraw);
+                PutPixel(x + xDraw, y - yDraw);
+                PutPixel(x - xDraw, y - yDraw);
+            } else {
+                PutPixel(x + yDraw, y + xDraw);
+                PutPixel(x - yDraw, y + xDraw);
+                PutPixel(x + yDraw, y - xDraw);
+                PutPixel(x - yDraw, y - xDraw);
+            }
+            if (xDraw * xDraw >= limit) {
+                break;
+            }
+            if (d > 0) {
+                d += delta_B;
+                delta_A += 4 * 2 * b2;
+                delta_B += 4 * (2 * b2 + 2 * a2);
+
+                xDraw += 1;
+                yDraw -= 1;
+            } else {
+                d += delta_A;
+                delta_A += 4 * 2 * b2;
+                delta_B += 4 * 2 * b2;
+
+                xDraw += 1;
+            }
+        }
+
+    }
+
+    private void DrawEllipse(float x, float y, float a, float b) {
+        DrawEllipse(x, y, a, b, true);
+        DrawEllipse(x, y, b, a, false);
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
+        imageView.setImageBitmap(copy);
+    }
+    private void DrawFilledEllipse(float x, float y, float a, float b) {
+        DrawFilledEllipse(x, y, a, b, true);
+        DrawFilledEllipse(x, y, b, a, false);
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.editorImageView);
+        imageView.setImageBitmap(copy);
+    }
+    private void recursivePenDraw(float x0, float y0, float x1, float y1) {
+        if (Math.abs(x0-x1)<0.5 && Math.abs(x0-x1)<0.5) {
+            return;
+        }
+        float x = (x0 + x1) / 2;
+        float y = (y0 + y1) / 2;
+        DrawSquare(x - (PENSIZE / 2), y - (PENSIZE / 2), PENSIZE, PENSIZE, COLOR);
+
+        recursivePenDraw(x0, y0, x, y);
+        recursivePenDraw(x1, y1, x, y);
+    }
+
     @Override
     public boolean onTouch(View view, MotionEvent e) {
         // MotionEvent reports input details from the touch screen
@@ -248,6 +368,98 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
         float x = e.getX();
         float y = e.getY();
         switch (Action) {
+            case FilledCircle:
+           {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        this.RedrawImage();
+                        float a = x - startX;
+                        float b = y - startY;
+                        a = a / 2;
+                        b = b / 2;
+                        float xDraw = (x + startX) / 2;
+                        float yDraw = (y + startY) / 2;
+                        if (a < 0) {
+                            if (b < 0) {
+                                DrawFilledEllipse(xDraw, yDraw, -a, -b);
+                            } else {
+                                DrawFilledEllipse(xDraw, yDraw, -a, b);
+
+                            }
+                        } else {
+                            if (b < 0) {
+                                DrawFilledEllipse(xDraw, yDraw, a, -b);
+                            } else {
+                                DrawFilledEllipse(xDraw, yDraw, a, b);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        startX = x;
+                        startY = y;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        putImage();
+                        break;
+                }
+
+            }
+            break;
+            case Circle: {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        this.RedrawImage();
+                        float a = x - startX;
+                        float b = y - startY;
+                        a = a / 2;
+                        b = b / 2;
+                        float xDraw = (x + startX) / 2;
+                        float yDraw = (y + startY) / 2;
+                        if (a < 0) {
+                            if (b < 0) {
+                                DrawEllipse(xDraw, yDraw, -a, -b);
+                            } else {
+                                DrawEllipse(xDraw, yDraw, -a, b);
+
+                            }
+                        } else {
+                            if (b < 0) {
+                                DrawEllipse(xDraw, yDraw, a, -b);
+                            } else {
+                                DrawEllipse(xDraw, yDraw, a, b);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        startX = x;
+                        startY = y;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        putImage();
+                        break;
+                }
+
+            }
+            break;
+            case Pen:
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        recursivePenDraw(startX, startY, x, y);
+                        startX = x;
+                        startY = y;
+                        putImage();
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        startX = x;
+                        startY = y;
+                        DrawSquare(startX - (PENSIZE / 2), startY - (PENSIZE / 2), PENSIZE, PENSIZE, COLOR);
+
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        putImage();
+                        break;
+                }
+                break;
             case Rectangle:
                 switch (e.getAction()) {
                     case MotionEvent.ACTION_MOVE:
@@ -262,7 +474,7 @@ public class EditorFragment extends Fragment implements View.OnTouchListener {
                         double dx = x - startX;
                         double dy = y - startY;
                         RedrawImage();
-                        DrawBorder(startX, startY, x - startX, y - startY, 2);
+                        DrawBorder(startX, startY, dx, dy, 2);
                         putImage(); //save border on image
                 }
                 break;

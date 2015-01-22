@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,14 @@ import java.util.List;
 import mem.memenator.MainActivity;
 import mem.memenator.R;
 import mem.memenator.adapters.PicAdapter;
+import mem.memenator.bluetooth.MemenatorBluetooth;
 
 /**
- * Fragment shown after left navigation select find people's images shared
+ * Fragment shown to share image by bluetooth
  */
 public class SendByBluetoothFragment extends Fragment {
+    public static final int TIMEOUT = 5;
+    public static final int MILLIS = 4000;
     private WifiP2pDeviceList deviceList;
     private List<Bitmap> receivedImages = new LinkedList<Bitmap>();
     private boolean isListening;
@@ -36,8 +40,9 @@ public class SendByBluetoothFragment extends Fragment {
     private Gallery picGallery;
     //image view for larger display
     private ImageView picView;
-    private PicAdapter imgAdapt;
+    public static PicAdapter imgAdapt;
     private View rootView;
+
 
     public SendByBluetoothFragment() {
     }
@@ -53,6 +58,7 @@ public class SendByBluetoothFragment extends Fragment {
         picGallery = (Gallery) rootView.findViewById(R.id.galleryReceived);//create a new adapter
         this.generateView();
         //scale options
+        imgAdapt = new PicAdapter(rootView.getContext());
         picView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         //set the click listener for each item in the thumbnail gallery
         picGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,7 +80,61 @@ public class SendByBluetoothFragment extends Fragment {
             }
         });
         Button receiveBtn = (Button) rootView.findViewById(R.id.receiveBtn);
+        receiveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!MemenatorBluetooth.isInitialized())
+                    if (!MemenatorBluetooth.Initialize(((MainActivity) getActivity()))) {
+                        Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG);
+                        return;
+                    }
+
+                if (!MemenatorBluetooth.isConnectionEstablished())
+                    MemenatorBluetooth.EstablishConnection();
+                int t = TIMEOUT;
+                while (!MemenatorBluetooth.isConnectionEstablished()) {
+                    try {
+                        Thread.sleep(MILLIS, 0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    t--;
+                    if (t == 0) {
+                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG);
+                        return;
+                    }
+                }
+                MemenatorBluetooth.SendPicture(MainActivity.editedPicture);
+                MemenatorBluetooth.ReceivePictures();
+            }
+        });
         Button sendBtn = (Button) rootView.findViewById(R.id.sendToWorldBtn);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!MemenatorBluetooth.isInitialized())
+                    if (!MemenatorBluetooth.Initialize(((MainActivity) getActivity()))) {
+                        Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG);
+                        return;
+                    }
+                if (!MemenatorBluetooth.isConnectionEstablished())
+                    MemenatorBluetooth.EstablishConnection();
+                int t = TIMEOUT;
+                while (!MemenatorBluetooth.isConnectionEstablished()) {
+                    try {
+                        Thread.sleep(MILLIS, 0);
+                    } catch (InterruptedException e) {
+                        Log.e("Problems with connection", e.getMessage());
+                    }
+                    t--;
+                    if (t == 0) {
+                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG);
+                        return;
+                    }
+                }
+                MemenatorBluetooth.SendPicture(MainActivity.editedPicture);
+            }
+        });
         return rootView;
     }
 

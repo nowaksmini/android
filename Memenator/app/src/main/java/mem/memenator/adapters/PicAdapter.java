@@ -30,9 +30,9 @@ public class PicAdapter extends BaseAdapter {
         galleryContext = c;
         //create bitmap array
         int size = c.getResources().getIntArray(R.array.samples_icons).length;
-        imageBitmaps  = new Bitmap[size];
+        imageBitmaps = new Bitmap[size];
         TypedArray imgs = c.getResources().obtainTypedArray(R.array.samples_icons);
-        for(int i=0; i<imageBitmaps.length; i++) {
+        for (int i = 0; i < imageBitmaps.length; i++) {
             Bitmap copy = BitmapFactory.decodeResource(c.getResources(), imgs.getResourceId(i, -1));
             double newHeight = c.getResources().getDimension(R.dimen.image_edited_width) * copy.getHeight() / copy.getWidth();
             copy = copy.createScaledBitmap(copy, (int) c.getResources().getDimension(R.dimen.image_edited_width), (int) (newHeight), true);
@@ -51,7 +51,7 @@ public class PicAdapter extends BaseAdapter {
     public PicAdapter(List<Bitmap> list, Context c) {
 
         this.galleryContext = c;
-        imageBitmaps  = list.toArray(new Bitmap[list.size()]);
+        imageBitmaps = list.toArray(new Bitmap[list.size()]);
         //get the styling attributes - use default Andorid system resources
         TypedArray styleAttrs = galleryContext.obtainStyledAttributes(R.styleable.PicGallery);
         //get the background resource
@@ -94,9 +94,24 @@ public class PicAdapter extends BaseAdapter {
     }
 
     //return bitmap at specified position for larger display
-    public Bitmap getPic(int posn)
-    {
+    public Bitmap getPic(int posn) {
         //return bitmap at posn index
         return imageBitmaps[posn];
+    }
+
+    public void addBitmap(Bitmap b) {
+        if (imageBitmaps.length >= 4) {
+            for (int i = 0; i < 3; i++) {
+                imageBitmaps[i] = imageBitmaps[i + 1];
+            }
+            imageBitmaps[3] = b;
+        } else {
+            Bitmap[] pomBitmaps = new Bitmap[imageBitmaps.length];
+            for (int i = 0; i < imageBitmaps.length; i++) {
+                pomBitmaps[i] = imageBitmaps[i];
+            }
+            pomBitmaps[imageBitmaps.length] = b;
+            imageBitmaps = pomBitmaps;
+        }
     }
 }

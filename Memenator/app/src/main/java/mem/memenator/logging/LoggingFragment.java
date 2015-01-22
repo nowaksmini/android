@@ -28,9 +28,9 @@ import mem.memenator.R;
 public class LoggingFragment extends Fragment {
 
     private UiLifecycleHelper uiHelper;
-    public static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
-    public static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
-    public static boolean pendingPublishReauthorization = false;
+    private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+    private static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
+    private static boolean pendingPublishReauthorization = false;
     private static final String TAG = "LoggingFragment";
     // for listening for session status changing logic
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -136,33 +136,6 @@ public class LoggingFragment extends Fragment {
                 session.requestNewPublishPermissions(newPermissionsRequest);
                 return;
             }
-
-//            Bundle postParams = new Bundle();
-//            postParams.putString("name", "Facebook SDK for Android");
-//            postParams.putString("caption", "Build great social apps and get more installs.");
-//            postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-//            postParams.putString("link", "https://developers.facebook.com/android");
-//            postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-//            final Context context = view.getContext();
-//            Request.Callback callback= new Request.Callback() {
-//                public void onCompleted(Response response) {
-//                    JSONObject graphResponse = response
-//                            .getGraphObject()
-//                            .getInnerJSONObject();
-//                    FacebookRequestError error = response.getError();
-//                    if (error != null) {
-//                        Toast.makeText(context, error.getErrorMessage(),
-//                                Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(context,"Your post is on facebook",Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            };
-//
-//            Request request = new Request(session, "me/feed", postParams,
-//                    HttpMethod.POST, callback);
-//            RequestAsyncTask task = new RequestAsyncTask(request);
-//            task.execute();
         }
     }
 

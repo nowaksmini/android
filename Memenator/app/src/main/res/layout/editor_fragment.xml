@@ -164,14 +164,14 @@
             android:minHeight="@dimen/image_edited_height"
             android:minWidth="@dimen/image_edited_width" />
 
-        <RelativeLayout
+        <RelativeLayout android:id="@+id/publishLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnSaveImage"
             android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/small_margin"
             android:background="@drawable/dotted_line"
-            android:layout_marginBottom="@dimen/average_margin">
+            android:layout_marginBottom="@dimen/small_margin">
 
             <ImageView
                 android:id="@+id/imageFacebook"
@@ -190,17 +190,20 @@
                 android:minWidth="@dimen/publish_text_panel_width"
                 android:textSize="10sp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/publish_text_panel_height"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:layout_toRightOf="@+id/publishText"
-                android:text="@string/publish_button"
-                android:onClick="publishStory"/>
+
         </RelativeLayout>
 
-
+        <Button
+            android:id="@+id/publishButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_margin"
+            android:text="@string/publish_button"
+            android:onClick="publishStory"
+            android:layout_alignParentRight="false"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/publishLayout" />
 
     </RelativeLayout>
 

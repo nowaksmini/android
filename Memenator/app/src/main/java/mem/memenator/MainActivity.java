@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AppEventsLogger;
@@ -29,7 +29,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 
 import java.io.ByteArrayOutputStream;
@@ -44,8 +43,8 @@ import java.util.List;
 import mem.memenator.adapters.TabsPagerAdapter;
 import mem.memenator.fonts.FontPickerDialog;
 import mem.memenator.logging.LoggingActivity;
-import mem.memenator.logging.LoggingFragment;
 import mem.memenator.options_fragments.EditorFragment;
+import mem.memenator.options_fragments.SendByBluetoothFragment;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -254,12 +253,6 @@ public class MainActivity extends FragmentActivity implements
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         // Logs 'app deactivate' App Event.
@@ -271,6 +264,13 @@ public class MainActivity extends FragmentActivity implements
     public void onDestroy() {
         super.onDestroy();
         uiHelper.onDestroy();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -398,41 +398,45 @@ public class MainActivity extends FragmentActivity implements
     public void publishStory(View view) {
         Session session = Session.getActiveSession();
 
-        if (session != null){
+        if (session != null && session.isOpened()){
 
             // Check for publish permissions
             List<String> permissions = session.getPermissions();
             if (!isSubsetOf(PERMISSIONS, permissions)) {
-                LoggingFragment.pendingPublishReauthorization = true;
+                pendingPublishReauthorization = true;
                 Session.NewPermissionsRequest newPermissionsRequest = new Session
                         .NewPermissionsRequest(this, PERMISSIONS);
                 session.requestNewPublishPermissions(newPermissionsRequest);
                 return;
             }
+            if (editedPicture != null) {
+                Bundle postParams = new Bundle();
+                postParams.putString("message", ((TextView) this.findViewById
+                        (R.id.publishText)).getText().toString());
 
-            Bundle postParams = new Bundle();
-            postParams.putString("message", "Facebook la la la");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            editedPicture.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            postParams.putByteArray("picture",byteArray);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                editedPicture.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                postParams.putByteArray("picture", byteArray);
 
-            Request.Callback callback= new Request.Callback() {
-                public void onCompleted(Response response) {
-                    FacebookRequestError error = response.getError();
-                    if (error != null) {
-                        Toast.makeText(getApplicationContext(),error.getErrorMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(),"Your post is on facebook",Toast.LENGTH_LONG).show();
+
+                Request.Callback callback = new Request.Callback() {
+                    public void onCompleted(Response response) {
+                        FacebookRequestError error = response.getError();
+                        if (error != null) {
+                            Toast.makeText(getApplicationContext(), error.getErrorMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Your post is on facebook", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            };
+                };
 
-            Request request = new Request(session, "me/photos", postParams,
-                    HttpMethod.POST, callback);
-            RequestAsyncTask task = new RequestAsyncTask(request);
-            task.execute();
+                Request request = new Request(session, "me/photos", postParams,
+                        HttpMethod.POST, callback);
+                RequestAsyncTask task = new RequestAsyncTask(request);
+                task.execute();
+            }
         }
     }
 
@@ -445,22 +449,9 @@ public class MainActivity extends FragmentActivity implements
         return true;
     }
 
-    private void makeMeRequest(final Session session) {
-        // Make an API call to get user data and define a
-        // new callback to handle the response.
-        Request request = Request.newMeRequest(session,
-                new Request.GraphUserCallback() {
-                    @Override
-                    public void onCompleted(GraphUser user, Response response) {
-                        // If the response is successful
-                        if (session == Session.getActiveSession()) {
-                            if (user != null) {
-
-                            }
-                        }
-                    }
-                });
-        request.executeAsync();
+    public void ChangePicture(Bitmap B) {
+        editedPicture = B;
+        SendByBluetoothFragment.imgAdapt.addBitmap(B);
     }
 }
 

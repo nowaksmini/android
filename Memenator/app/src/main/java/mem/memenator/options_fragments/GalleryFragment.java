@@ -96,9 +96,9 @@ public class GalleryFragment extends Fragment {
             arrPath[i] = imagecursor.getString(dataColumnIndex);
         }
 
-        GridView imagegrid = (GridView) rootView.findViewById(R.id.PhoneImageGrid);
+        GridView imageGrid = (GridView) rootView.findViewById(R.id.PhoneImageGrid);
         imageAdapter = new ImageAdapter();
-        imagegrid.setAdapter(imageAdapter);
+        imageGrid.setAdapter(imageAdapter);
         imagecursor.close();
         final Button selectBtn = (Button) rootView.findViewById(R.id.selectBtn);
         selectBtn.setOnClickListener(new View.OnClickListener() {
