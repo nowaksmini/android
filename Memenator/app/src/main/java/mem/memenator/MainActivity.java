@@ -30,6 +30,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.ProfilePictureView;
 
 import java.io.ByteArrayOutputStream;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import mem.memenator.adapters.TabsPagerAdapter;
@@ -420,21 +422,29 @@ public class MainActivity extends FragmentActivity implements
             }
             if (editedPicture != null) {
                 Bundle postParams = new Bundle();
-                postParams.putString("message", ((TextView) this.findViewById
-                        (R.id.publishText)).getText().toString());
+                final String message = ((TextView) this.findViewById
+                        (R.id.publishText)).getText().toString();
+                postParams.putString("message",message );
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 editedPicture.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
                 postParams.putByteArray("picture", byteArray);
 
-
+                final MainActivity mainActivity = this;
                 Request.Callback callback = new Request.Callback() {
                     public void onCompleted(Response response) {
                         FacebookRequestError error = response.getError();
                         if (error != null) {
                             Toast.makeText(getApplicationContext(), error.getErrorMessage(),
                                     Toast.LENGTH_SHORT).show();
+                            List<Bitmap> list = new LinkedList<Bitmap>();
+                            list.add(editedPicture);
+                            FacebookDialog shareDialog = new FacebookDialog.PhotoShareDialogBuilder(mainActivity)
+                                    .addPhotos(list)
+                                    .setApplicationName(message)
+                                    .build();
+                            uiHelper.trackPendingDialogCall(shareDialog.present());
                         } else {
                             Toast.makeText(getApplicationContext(), "Your post is on facebook", Toast.LENGTH_LONG).show();
                         }

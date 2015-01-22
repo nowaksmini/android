@@ -42,14 +42,12 @@ public class ConnectThread extends Thread {
         // Do work to manage the connection (in a separate thread)
         ConnectedThread CT = new ConnectedThread(mmSocket);
         if (image != null) {
+            MemenatorBluetooth.makeToast("Sending image...");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             CT.write(byteArray);
             MemenatorBluetooth.ImageSent(CT);
-        } else {
-            CT.start();
         }
-
     }
 }

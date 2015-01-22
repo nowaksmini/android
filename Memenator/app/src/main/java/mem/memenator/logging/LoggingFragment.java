@@ -28,7 +28,7 @@ import mem.memenator.R;
 public class LoggingFragment extends Fragment {
 
     private UiLifecycleHelper uiHelper;
-    private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+    private static final List<String> PERMISSIONS = Arrays.asList("publish_actions","public_profile","publish_stream");
     private static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
     private static boolean pendingPublishReauthorization = false;
     private static final String TAG = "LoggingFragment";

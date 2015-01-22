@@ -34,6 +34,10 @@ public class MemenatorBluetooth {
         return (mBluetoothAdapter != null);
     }
 
+    static public void makeToast(String message) {
+        Toast.makeText(mainActivity.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
     static public boolean Initialize(MainActivity mem) {
         mainActivity = mem;
         Threads = new ArrayList<ConnectThread>();
@@ -91,7 +95,7 @@ public class MemenatorBluetooth {
                     Toast.LENGTH_LONG).show();
             cThread = new ConnectThread(mPartner.get(i), mSocket, B);
             cThread.start();
-            Threads.add(cThread);
+           // Threads.add(cThread);
         }
     }
 
@@ -102,14 +106,17 @@ public class MemenatorBluetooth {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (mSocket == null) {
+            Toast.makeText(mainActivity.getApplicationContext(), "Cannot listen for images", Toast.LENGTH_LONG);
+            return;
+        }
         sThread = new ServerThread(null, mSocket);
         sThread.start();
-
     }
 
     static ConnectThread cThread;
 
-    // if iamge was successfully sent
+    // if image was successfully sent
     static public void ImageSent(ConnectedThread CT) {
         CT.cancel();
         Toast.makeText(mainActivity.getApplicationContext(), "Image from home successfully send ", Toast.LENGTH_LONG).show();

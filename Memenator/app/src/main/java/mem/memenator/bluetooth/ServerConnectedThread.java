@@ -26,30 +26,33 @@ public class ServerConnectedThread extends Thread {
         try {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
     }
 
 
-    private int GetArraySize(byte[] bytes)
-    {
+    private int GetArraySize(byte[] bytes) {
         ByteBuffer wrapper = ByteBuffer.wrap(bytes);
         return wrapper.getInt();
     }
+
     /* Call this from the main activity to send data to the remote device */
     public void write(byte[] bytes) {
         try {
             mmOutStream.write(bytes);
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
     }
+
     public void run() {
         byte[] buffer = new byte[1024];  // buffer store for the stream
         int bytes; // bytes returned from read()
-        int ByteArraySize=0;
-        int TotalBytes=0;
-        ArrayList<Byte> tmp= new ArrayList<Byte>();
+        int ByteArraySize = 0;
+        int TotalBytes = 0;
+        ArrayList<Byte> tmp = new ArrayList<Byte>();
         try {
             // Read from the InputStream
             bytes = mmInStream.read(buffer);
@@ -60,13 +63,12 @@ public class ServerConnectedThread extends Thread {
             return;
         }
         // Keep listening to the InputStream until an exception occurs
-        while (TotalBytes<ByteArraySize) {
+        while (TotalBytes < ByteArraySize) {
             try {
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
-                TotalBytes+=bytes;
-                for(int i = 0; i < bytes; i++)
-                {
+                TotalBytes += bytes;
+                for (int i = 0; i < bytes; i++) {
                     tmp.add(buffer[i]);
                 }
                 // Send the obtained bytes to the UI activity
@@ -75,12 +77,14 @@ public class ServerConnectedThread extends Thread {
                 break;
             }
         }
-        MemenatorBluetooth.ImageReceived(this,tmp.toArray());
+        MemenatorBluetooth.ImageReceived(this, tmp.toArray());
     }
+
     /* Call this from the main activity to shutdown the connection */
     public void cancel() {
         try {
             mmSocket.close();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
     }
 }

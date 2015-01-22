@@ -5,10 +5,12 @@ package mem.memenator.options_fragments;
  */
 
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ import mem.memenator.bluetooth.MemenatorBluetooth;
 public class SendByBluetoothFragment extends Fragment {
     public static final int TIMEOUT = 5;
     public static final int MILLIS = 4000;
+    private static final int MAX_PROGRESS = 100;
     private WifiP2pDeviceList deviceList;
     private List<Bitmap> receivedImages = new LinkedList<Bitmap>();
     private boolean isListening;
@@ -42,7 +45,7 @@ public class SendByBluetoothFragment extends Fragment {
     private ImageView picView;
     public static PicAdapter imgAdapt;
     private View rootView;
-
+    private ProgressDialog Circle;
 
     public SendByBluetoothFragment() {
     }
@@ -86,6 +89,28 @@ public class SendByBluetoothFragment extends Fragment {
         receiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentActivity a = getActivity();
+                Circle = new ProgressDialog(a);
+                Circle.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                Circle.setMessage("Connecting and receiving");
+                Circle.setIndeterminate(true);
+                Circle.show();
+                final Thread thread = new Thread() {
+                    public void run() {
+                        int value = 0;
+                        while (Circle.isShowing()) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                Log.e(e.getMessage(), e.getMessage());
+                            }
+                            value += 3;
+                            value = value % MAX_PROGRESS;
+                            Circle.setProgress(value);
+                        }
+                    }
+                };
+                thread.start();
                 if (!MemenatorBluetooth.isInitialized())
                     if (!MemenatorBluetooth.Initialize(((MainActivity) getActivity()))) {
                         Toast.makeText(rootView.getContext(), "Bluetooth is not supported by your device", Toast.LENGTH_LONG).show();
@@ -104,11 +129,13 @@ public class SendByBluetoothFragment extends Fragment {
                     t--;
                     if (t == 0) {
                         Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG).show();
-                        return;
+                        break;
                     }
                 }
-                MemenatorBluetooth.SendPicture(MainActivity.editedPicture);
+
                 MemenatorBluetooth.ReceivePictures();
+                Circle.dismiss();
+
             }
         });
         Button sendBtn = (Button) rootView.findViewById(R.id.sendToWorldBtn);
@@ -131,7 +158,7 @@ public class SendByBluetoothFragment extends Fragment {
                     }
                     t--;
                     if (t == 0) {
-                        Toast.makeText(rootView.getContext(), "Device not found", Toast.LENGTH_LONG).show();
+                        Toast.makeText(rootView.getContext(), "Devices found", Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
