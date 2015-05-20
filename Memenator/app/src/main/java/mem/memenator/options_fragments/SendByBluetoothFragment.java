@@ -7,7 +7,6 @@ package mem.memenator.options_fragments;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -36,9 +35,7 @@ public class SendByBluetoothFragment extends Fragment {
     public static final int TIMEOUT = 5;
     public static final int MILLIS = 4000;
     private static final int MAX_PROGRESS = 100;
-    private WifiP2pDeviceList deviceList;
     private List<Bitmap> receivedImages = new LinkedList<Bitmap>();
-    private boolean isListening;
     //gallery object
     private Gallery picGallery;
     //image view for larger display
